@@ -1,0 +1,52 @@
+TODO LIST โดยใช้ NEXT JS 14และ MUI component V5และ TYPESCRIPT เท่านั้น โดยทั้งหมด ทำแค่ FRONTEND + STATE ไม่ต้องทำ BACKEND โดยต้องประกอบไปด้วย COMPONENT 
+1.	TEXTFIELD
+2.	BUTTON
+3.	DIALOG
+4.	CARD
+5.	TYPOGRAPHY
+6.	SELECT
+7.	SWITCH
+8.	TABLE
+9.	DATA GRID
+10.	AUTOCOMPLETE
+11.	CHECKBOX
+12.	Snackbar
+13.	Tabs
+14.	GRid
+15.	REACT CONTEXT ( บังคับใช้อันนี ห้ามส่ง PROPS กรณีเป็น DATA)
+16.	formik 17. Pagination
+โดยUI จะทำอย่างไรก็ได้ ให้มันสามารถเรียกใช้muiตามด้านบนให้ครบแล้วสามารถทำรายการดังนี้ได้ โดยจะต้องมี FIELD ดังต่อไปนี้ 
+1.	ACTIVE
+2.	_ID
+3.	NAME
+4.	CREATEDAT
+5.	UPDATEDAT
+6.	PRIORITY
+7.	TYPE (ประเภทของTODO LIST)
+8.	IMAGE รูปภาพประกอบ. Input type ‘file’
+9.	Status
+1.	TODO LIST จะต้องแสดง LIST สิ่งที่ต้องทำ
+2.	สามารถเพิ่มได้
+3.	สามารถแก้ไขได้
+4.	สามารถลบได้
+5.	สามารถ SOFT DELETE ได้
+6.	สามารถ เรียงลำดับ เวลาที่สร้างก่อนได้
+7.	สามารถเรียงลำดับ priority ของ TODO LIST ได้
+8.	ทุกการเปิด เนื้อหา ไม่ว่าจะเป็นเพิ่ม แก้ไข ลบ ต้องใช่ DIALOG เท่านั้น
+9.	สามารถดูรายการแยก ได้ เช่น รายการทั้งหมด / ทำเสร็จแล้ว/ยังทำไม่เสร็จ/กำลังทำ
+
+COMPONENT เพิ่ม ใน MUI เอาไปประยุกใช้กับหน้า TODO LIST ของเรา
+-POPPER
+-STEPPER
+-drawer
+-MENU
+-APP BARS
+-Tooltip
+เพิ่ม PAGE ABOUT ME ใส่รายละเอียดคนสร้างโปรเจคไปด้วยแนะนำตัวเองคล้ายๆเว็บ ทำ portfolio
+import { styled } from '@mui/material';
+
+ฝึกใช้ styled ในการ custom CSS โดยปรับ CSS ของ TEXT FIELD ให้เป็นไปตามรูปภาพ ให้มีการใช้ css ขั้นลึกเช่น  .MuiOutlinedInput-root ทีเป้นชั้น css ของ textfield ด้วย
+ภาพ
+
+ 
+
