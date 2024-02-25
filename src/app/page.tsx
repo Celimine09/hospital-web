@@ -9,7 +9,9 @@ export default function Home() {
     //   mainmain
     // </main>
     <>
-    hey
+    <h1>
+      hey
+    </h1>
     </>
   );
 }

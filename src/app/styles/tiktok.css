@@ -1,0 +1,14 @@
+.ttk {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: gray;
+    width: 500px;
+    height: 80vh;
+    /* justi
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "gray",
+    width: "500px",
+    height: "80vh" */
+}
