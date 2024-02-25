@@ -1,4 +1,4 @@
-'use client'
+// 'use client'
 import ListItem from "@mui/material/ListItem";
 import TextField from "@mui/material/TextField";
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';

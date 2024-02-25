@@ -1,4 +1,3 @@
-
 const ContactPage = () => {
     return <h1>
         Hello, Next.js!

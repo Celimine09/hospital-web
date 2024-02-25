@@ -1,4 +1,4 @@
-'use client'
+// 'use client'
 import List from '@mui/material/List';
 import { useState, useEffect, useContext } from 'react';
 import TodoItem from './TodoItem';
