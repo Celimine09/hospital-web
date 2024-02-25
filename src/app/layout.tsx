@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { TodoFormProvider } from "./contexts/todo.context";
-import { TodoDialogProvider } from "./contexts/dialog.context";
-// import { CustomDialogProvider } from "./components/CreateTodoDialog";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,12 +16,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-          <TodoDialogProvider>
-            <TodoFormProvider>
-              {children}
-            </TodoFormProvider>
-          </TodoDialogProvider>
+      {/* <body className={inter.className}> */}
+      <body >
+        {children}
       </body>
     </html>
   );
