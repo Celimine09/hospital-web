@@ -1,37 +1,41 @@
+'use client'
 import Image from "next/image";
-import styles from "./page.module.css";
-import { Box, Button, Grid, TextField } from "@mui/material";
-import { TodoCard } from "./components/TodoCard";
-import CustomDialog from "./components/CustomDialog";
+import styles from "./styles/page.module.css";
+import { Box, Button, Grid, TextField, Typography } from "@mui/material";
+// import { TodoCard } from "./components/TodoCard";
+// import CreateTodoDialog from "./components/CreateTodoDialog";
+import TodoForm from "./components/todo/TodoForm";
+import TodoList from "./components/todo/TodoFormOutterBox";
+import React, { useContext } from "react";
+import { TodoContext, useTodoContext } from "./contexts/todo.context";
+import TodoItem from "./components/todo/TodoItem";
+import CreateTodoDialog from "./components/dialog/CreateTodoDialog";
+import MySearchBar from "./components/searchbar/MySearchBar";
 
 
 export default function Home() {
+  const {todos} = React.useContext(TodoContext)
   return (
     <main className={styles.main}>
-      {/* // <main className=""> */}
-      <Box
-        component="form"
-        noValidate
-        autoComplete="off"
-      // sx={{flex}}
-      >
-        <CustomDialog />
-        <TextField id="outlined-basic" label="Search me"
-          variant="filled"
-          fullWidth
-          color="secondary"
-        />
-        <Button variant="contained" color="primary">
-          button
-        </Button>
-      </Box>
+
+      <CreateTodoDialog/>
+      {/* <TodoList /> */}
+      <MySearchBar />
+
+      <Typography variant="h5">
+        TODOs show here ...
+      </Typography>
       <Grid container spacing={6}>
-        <TodoCard todoName="Go shop" todoDescription="descdesc"/>
-        <TodoCard todoName="Enroll 42" 
-          todoDescription=
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa quo molestias recusandae laboriosam rem! Sapiente excepturi quibusdam deserunt quis ad. Quo sunt unde laudantium eius ipsa nulla pariatur odit eligendi. \
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa quo molestias recusandae laboriosam rem! Sapiente excepturi quibusdam deserunt quis ad. Quo sunt unde laudantium eius ipsa nulla pariatur odit eligendi."
-          />
+        {
+          todos
+          //.filter(FILTER_MAP[filter])
+          .map((todo:ITodo) => (
+              <TodoItem 
+                  todo={todo}
+                  key={todo.id}
+              />
+          ))
+        }
       </Grid>
 
 
