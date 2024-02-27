@@ -1,20 +1,4 @@
-.navbar {
-    width: 100vw;
-    height: 110px;
-    background-color: #1B3C73;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-}
-
-.navbar-links {
-    display: flex;
-}
-
-.navbar-links a {
+.navbarButton {
     background-color: #40679E;
     padding: 10px 15px;
     color: white;
@@ -24,8 +8,10 @@
     font-weight: bold;
     border-radius: 10px;
     transition: background-color 0.3s ease;
+    display: flex;
+    margin-top: 20px;
 }
 
-.navbar-links a:hover{
+.navbarButton:hover{
     background-color: #5296F4;
 }
