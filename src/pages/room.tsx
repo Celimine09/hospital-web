@@ -50,41 +50,10 @@ const RoomPage = () => {
 
 
     return <div>
-        <h1>
-            Room
-        </h1>
-        <TikTok isTick={true} size={64}/>
-        <TikTok isTick={false}/>
-        <center>
-            <Button variant="outlined" onClick={(event) => {
-                onButtonClicked()
-            }}>
-                click bear
-            </Button>
-            <div style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "gray",
-                width: "500px",
-                height: "80vh"
-            }}>
-                <h1>
-                    {n}
-                </h1>
-                {/* <div>
-                    {
-                        heros.map((hero, id) => {
-                            return <div key={id}>
-                                <h3>
-                                    {hero.heroName}
-                                </h3>
-                            </div>
-                        })
-                    }
-                </div> */}
-            </div>
-        </center>
+        {/* <TikTok isTick={true} size={64}/>
+        <TikTok isTick={false}/> */}
+        
+        {/* <FullFeaturedCrudGrid /> */}
     </div>
 }
 
