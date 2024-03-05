@@ -14,7 +14,6 @@ const RoomPage = () => {
     // let n : number = 10
     const [n, setN] = useState<number>(0)
     const dummyHeros : IHero[] = [{heroName : "A", attackType: "A"}]
-    const [heros, setHeros] = useState<IHero[]>(dummyHeros);
 
 
     const onButtonClicked = () => {
@@ -25,27 +24,7 @@ const RoomPage = () => {
     }
 
     useEffect(() => {
-        getX()
     }, [])
-
-    const getX = async () => {
-        // const urlGetHeroes = "https://api.opendota.com/api/heroes"
-        // const response = await axios.get(urlGetHeroes)
-        // // console.log(response.data)
-        // response.data.forEach((hero:any)=> {
-        //     const newHero : IHero = {
-        //         heroName: response.data.name,
-        //         attackType: response.data.attack_type
-        //     }
-        //     setHeros(
-        //         [
-        //             ...heros,
-        //             newHero
-        //         ]
-        //     )
-        //     console.log(heros)
-        // });
-    }
 
 
 
