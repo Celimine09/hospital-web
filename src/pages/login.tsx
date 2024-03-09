@@ -47,6 +47,7 @@ const Login = () => {
             //     // หากเกิดข้อผิดพลาดในการเชื่อมต่อกับ backend
             //     alert("An error occurred. Please try again later.");
             // });
+            window.location.href = "/home";
     };
 
 
