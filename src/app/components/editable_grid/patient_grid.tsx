@@ -44,7 +44,15 @@ const useFakeMutation = () => {
 const ServerSidePersistence = () => {
     const mutateRow = useFakeMutation();
     const [nameQuery, setNameQuery] = React.useState("");
-    const [ageQuery, setAgeQuery] = React.useState("");
+    const [sexQuery, setSexQuery] = React.useState("");
+    const [birthdayQuery, setBirthdayQuery] = React.useState("");
+    const [telnumberQuery, setTelnumberQuery] = React.useState("");
+    const [addressQuery, setAddressQuery] = React.useState("");
+    const randomAddresses = [
+        '1234 Random St, Random City',
+        '5678 Mystery Ave, Mystery Town',
+        '91011 Secret Blvd, Secret Village'
+    ];
     const [snackbar, setSnackbar] = React.useState<Pick<
         AlertProps,
         'children' | 'severity'
@@ -74,25 +82,29 @@ const ServerSidePersistence = () => {
             editable: true
         },
         {
-            field: 'age',
-            headerName: 'Age',
-            type: 'number',
+            field: 'sex',
+            headerName: 'Sex',
             editable: true,
             align: 'left',
             headerAlign: 'left',
         },
         {
-            field: 'dateCreated',
-            headerName: 'Date Created',
+            field: 'birthday',
+            headerName: 'Birthday',
             type: 'date',
-            width: 180,
+            width: 130,
             editable: true,
         },
         {
-            field: 'lastLogin',
-            headerName: 'Last Login',
-            type: 'dateTime',
-            width: 220,
+            field: 'telnumber',
+            headerName: 'Tel-number',
+            width: 130,
+            editable: true,
+        },
+        {
+            field: 'address',
+            headerName: 'Address',
+            width: 320,
             editable: true,
         },
     ];
@@ -100,38 +112,43 @@ const ServerSidePersistence = () => {
     const rows: GridRowsProp = [
         {
             id: 1,
-            name: 'randomTraderName()',
-            age: 25,
-            dateCreated: randomCreatedDate(),
-            lastLogin: randomUpdatedDate(),
+            name: randomTraderName(),
+            sex: Math.random() > 0.5 ? 'M' : 'F',
+            birthday: randomCreatedDate(),
+            telnumber: '0' + Math.random().toString().slice(2, 11),
+            address: randomAddresses[Math.floor(Math.random() * 3)],
         },
         {
             id: 2,
-            name: 'T',
-            age: 36,
-            dateCreated: randomCreatedDate(),
-            lastLogin: randomUpdatedDate(),
+            name: randomTraderName(),
+            sex: Math.random() > 0.5 ? 'M' : 'F',
+            birthday: randomCreatedDate(),
+            telnumber: '0' + Math.random().toString().slice(2, 11),
+            address: randomAddresses[Math.floor(Math.random() * 3)],
         },
         {
             id: 3,
             name: randomTraderName(),
-            age: 19,
-            dateCreated: randomCreatedDate(),
-            lastLogin: randomUpdatedDate(),
+            sex: Math.random() > 0.5 ? 'M' : 'F',
+            birthday: randomCreatedDate(),
+            telnumber: '0' + Math.random().toString().slice(2, 11),
+            address: randomAddresses[Math.floor(Math.random() * 3)],
         },
         {
             id: 4,
             name: randomTraderName(),
-            age: 28,
-            dateCreated: randomCreatedDate(),
-            lastLogin: randomUpdatedDate(),
+            sex: Math.random() > 0.5 ? 'M' : 'F',
+            birthday: randomCreatedDate(),
+            telnumber: '0' + Math.random().toString().slice(2, 11),
+            address: randomAddresses[Math.floor(Math.random() * 3)],
         },
         {
             id: 5,
             name: randomTraderName(),
-            age: 23,
-            dateCreated: randomCreatedDate(),
-            lastLogin: randomUpdatedDate(),
+            sex: Math.random() > 0.5 ? 'M' : 'F',
+            birthday: randomCreatedDate(),
+            telnumber: '0' + Math.random().toString().slice(2, 11),
+            address: randomAddresses[Math.floor(Math.random() * 3)],
         },
     ];
 
@@ -140,11 +157,20 @@ const ServerSidePersistence = () => {
         if (nameQuery) {
             filtered = filtered.filter(row => row.name.toLowerCase().includes(nameQuery.toLowerCase()));
         }
-        if (ageQuery) {
-            filtered = filtered.filter(row => row.age.toString().toLowerCase().includes(ageQuery.toLowerCase()));
+        if (sexQuery) {
+            filtered = filtered.filter(row => row.sex.toString().toLowerCase().includes(sexQuery.toLowerCase()));
+        }
+        if (birthdayQuery) {
+            filtered = filtered.filter(row => row.birthday.toString().toLowerCase().includes(birthdayQuery.toLowerCase()));
+        }
+        if (telnumberQuery) {
+            filtered = filtered.filter(row => row.telnumber.toString().toLowerCase().includes(telnumberQuery.toLowerCase()));
+        }
+        if (addressQuery) {
+            filtered = filtered.filter(row => row.address.toString().toLowerCase().includes(addressQuery.toLowerCase()));
         }
         return filtered;
-    }, [nameQuery, ageQuery]);
+    }, [nameQuery, sexQuery, birthdayQuery, telnumberQuery, addressQuery]);
 
     return (
         <div>
@@ -158,9 +184,33 @@ const ServerSidePersistence = () => {
                     style={{ marginRight: 10 }}
                 />
                 <TextField
-                    value={ageQuery}
-                    onChange={(e) => setAgeQuery(e.target.value)}
-                    label="Search by Age"
+                    value={sexQuery}
+                    onChange={(e) => setSexQuery(e.target.value)}
+                    label="Search by Sex"
+                    variant="outlined"
+                    size="small"
+                    style={{ marginRight: 10 }}
+                />
+                <TextField
+                    value={birthdayQuery}
+                    onChange={(e) => setBirthdayQuery(e.target.value)}
+                    label="Search by Birthday"
+                    variant="outlined"
+                    size="small"
+                    style={{ marginRight: 10 }}
+                />
+                <TextField
+                    value={telnumberQuery}
+                    onChange={(e) => setTelnumberQuery(e.target.value)}
+                    label="Search by Tel-number"
+                    variant="outlined"
+                    size="small"
+                    style={{ marginRight: 10 }}
+                />
+                <TextField
+                    value={addressQuery}
+                    onChange={(e) => setAddressQuery(e.target.value)}
+                    label="Search by Address"
                     variant="outlined"
                     size="small"
                     style={{ marginRight: 10 }}
