@@ -1,3 +1,7 @@
+'use client'
+import BasicColumnsGrid from "@/app/components/datagrid"
+import ServerSidePersistence from "@/app/components/editable_grid/editable_grid"
+import FullFeaturedCrudGrid from "@/app/components/gridx"
 import Navbar from "@/app/components/navbar"
 import TikTok from "@/app/components/tiktok"
 import { Button } from "@mui/material"
@@ -54,6 +58,21 @@ const RoomPage = () => {
         <TikTok isTick={false}/> */}
         
         {/* <FullFeaturedCrudGrid /> */}
+        {/* <BasicColumnsGrid /> */}
+        <div style={{
+            width: "80vw",
+            height: "80vh",
+            // display: "flex",
+            // justifyContent: "center",
+            // alignItems: "center",
+            // backgroundColor: "red",
+            marginLeft: "auto",
+            marginRight: "auto",
+            //marginTop: "auto"
+
+        }}>
+            <ServerSidePersistence />
+        </div>
     </div>
 }
 

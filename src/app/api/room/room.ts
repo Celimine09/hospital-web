@@ -39,6 +39,7 @@ export default function handler(
         case "POST":
             break;
         case "GET":
+            console.log("GET ")
             break;
 
         default:
