@@ -1,38 +1,26 @@
-import {connection} from "../../database/db.connector"
+import { RowDataPacket } from "mysql2/promise";
+import { connection } from "../../database/db.connector";
+import { NextResponse } from "next/server";
 
 export async function GET() {
-    // connection.connect().then(res => {
-    //     console.log(res)
-    // }).catch(err => {
-    //     console.error(err)
-    // })
-
     try {
-        const [results, fields] = await connection.query(
-            // 'SELECT * FROM `table` WHERE `name` = "Page" AND `age` > 45'
-            'select count(*) from Room r'
-        );
-        console.log(results[0]); // results contains rows returned by server
-        console.log(fields); // fields contains extra meta data about results, if available
+        const [results1, fields1] = await connection.query('select count(*) from Room r');
+        console.log(results1);
+        console.log(fields1);
     } catch (err) {
         console.log(err);
     }
 
     try {
-        const [results, fields] = await connection.query(
-            // 'SELECT * FROM `table` WHERE `name` = "Page" AND `age` > 45'
-            'select count(*) from Staff s '
-        );
-        console.log(results); // results contains rows returned by server
-        console.log(fields); // fields contains extra meta data about results, if available
+        const [results2, fields2] = await connection.query('select count(*) from Staff s');
+        console.log(results2);
+        console.log(fields2);
     } catch (err) {
         console.log(err);
     }
 
     return Response.json({
-        message: `GET method called`,
+        message: "GET"
     });
 }
-
-// ! CRUD ครูด
-// * create retrieve update delete
+    
