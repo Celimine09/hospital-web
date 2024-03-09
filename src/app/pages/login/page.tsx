@@ -1,3 +1,4 @@
+'use client'
 import { LockOutlined } from "@mui/icons-material";
 import {
     Container,
@@ -47,7 +48,7 @@ const Login = () => {
             //     // หากเกิดข้อผิดพลาดในการเชื่อมต่อกับ backend
             //     alert("An error occurred. Please try again later.");
             // });
-            window.location.href = "/home";
+            window.location.href = "/";
     };
 
 
