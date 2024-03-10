@@ -1,3 +1,4 @@
+import { RowDataPacket } from "mysql2";
 import {connection} from "../../database/db.connector"
 
 export async function GET() {
@@ -8,7 +9,7 @@ export async function GET() {
     // })
 
     try {
-        const [results, fields] = await connection.query(
+        const [results, fields] = await connection.query<RowDataPacket[]>(
             // 'SELECT * FROM `table` WHERE `name` = "Page" AND `age` > 45'
             'select count(*) from Room r'
         );

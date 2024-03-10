@@ -16,7 +16,7 @@ CREATE TABLE `Patient` (
   `p_id` int unsigned NOT NULL AUTO_INCREMENT,
   `lname` varchar(100) NOT NULL,
   `phone_no` text NOT NULL,
-  `gender` enum('M','L') NOT NULL,
+  `gender` enum('M','F') NOT NULL,
   `birthday` date NOT NULL,
   PRIMARY KEY (`p_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
