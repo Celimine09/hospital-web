@@ -8,16 +8,9 @@ import { Button } from "@mui/material"
 import axios from "axios"
 import { useEffect, useState } from "react"
 
-// interface IHero
-// {
-//     heroName: string
-//     attackType: string
-// }
-
 const RoomPage = () => {
     // let n : number = 10
     // const dummyHeros : IHero[] = [{heroName : "A", attackType: "A"}]
-
 
     const onButtonClicked = () => {
         console.log("clicked.")
@@ -33,7 +26,7 @@ const RoomPage = () => {
     }}>
         {/* <TikTok isTick={true} size={64}/>
         <TikTok isTick={false}/> */}
-        
+
         {/* <FullFeaturedCrudGrid /> */}
         {/* <BasicColumnsGrid /> */}
         <div style={{
