@@ -92,14 +92,52 @@ export async function PUT(req: NextRequest) {
             })
         }
     }
+    else if (data.operation === "changeStaff")
+    {
+        console.log("change staff")
+        console.log(data)
+        try {
+            var name_to_change : string = data.staff_fname_to_change
+            console.log(name_to_change)
+
+            if (name_to_change === "" || name_to_change === null)
+                return;
+
+            const sql = `
+            UPDATE  Room r 
+            SET     r.staff_id  = (
+                    SELECT s.s_id 
+                    FROM Staff s
+                    WHERE s.fname = '${name_to_change}'
+                    -- WHERE s.fname = '${'นานะ'}'
+                )
+            where r.room_id = ${data.room_id}
+
+            `
+            const [results, fields] = await connection.query<RowDataPacket[]>(
+                sql);
+            console.log(results)
+            return Response.json({
+                status: `success`,
+                message: `changed staff in room ${data.room_id}`,
+                // response: results
+            });
+        } catch (err) {
+            console.log(err);
+            return Response.json({
+                status: "failed",
+                message: err
+            })
+        }
+    }
     else if (data.operation === "changePatient")
     {
         console.log("change patient")
         console.log(data)
         try {
             var name_to_change : string = data.patient_fullname_to_change
-            name_to_change = name_to_change.trim()
-            name_to_change = name_to_change.split(" ")[0]
+            name_to_change = name_to_change?.trim()
+            name_to_change = name_to_change?.split(" ")[0]
             console.log(name_to_change)
 
             if (name_to_change === "")

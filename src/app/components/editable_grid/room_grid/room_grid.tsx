@@ -1,17 +1,9 @@
 'use client'
 import * as React from 'react';
 import {
-    DataGrid,
     GridRowModel,
-    GridColDef,
-    GridRowId,
     GridRowsProp,
-    GridRenderEditCellParams,
-    GridRenderCellParams,
-    GridEditSingleSelectCellProps,
-    useGridApiContext,
-    GridEditSingleSelectCell,
-    GridApi,
+    GridToolbar,
 } from '@mui/x-data-grid';
 import {
     randomCreatedDate,
@@ -19,7 +11,6 @@ import {
     randomStatusOptions,
     randomTaxCode,
     randomTraderName,
-    randomUpdatedDate,
 } from '@mui/x-data-grid-generator';
 import Snackbar from '@mui/material/Snackbar';
 import Alert, { AlertProps } from '@mui/material/Alert';
@@ -28,187 +19,18 @@ import axios, { AxiosResponse } from 'axios';
 import moment from "moment"
 import { randomNumberBetween } from '@mui/x-data-grid/utils/utils';
 import { baseHost } from '@/app/constants/URLs';
-import { Box, Button } from '@mui/material';
 import { getPatientsNames} from '@/app/service/patients.service';
-import { ArrowDropDown } from '@mui/icons-material';
+import { StripedDataGrid } from '../striped_datagrid';
+import { patientNames, roomColumns, setPatientsName, setStaffsName, staffNames } from './room.grid.columns';
+import { getStaffsName } from '@/app/service/stafff.service';
 
-
-const CustomEditComponent = (props: GridEditSingleSelectCellProps) => {
-    const apiRef = useGridApiContext();
-
-
-    const handleValueChange = async () => {
-        // console.log("AAAAAAAAA")
-        // axios.put(`${baseHost}/api/room`, {
-        //     operation: "changePatient",
-        //     room_id : props.row.room_id,
-        //     patient_fullname_to_change: props.row.patient
-        //     // patient_to: props.row.patient,
-        //     // patient_to: props.row.patient
-        // })
-        // console.log()
-        // apiRef.current.
-        await apiRef.current.setEditCellValue({
-            id: props.id,
-            field: 'patient',
-            value: '99999999999',
-        })
-
-    };
-
-    return <GridEditSingleSelectCell onValueChange={handleValueChange} {...props} />;
-};
 
 // await axios.get<any, IResponseFromGettingPatientNames>(
 // await axios.get<any, any>(
 //         `${baseHost}/api/patient/patients`)
 // console.log(patientNames)
 
-var patientNames : string[] = ["A", "B"]
 
-const columns: GridColDef[] = [
-    {
-        field: 'room_code',
-        type: "string",
-        headerName: 'Room Code',
-        width: 150,
-    },
-    {
-        field: 'room_type',
-        headerName: 'Room Type',
-        type: 'string',
-        align: 'left',
-        width: 100,
-        headerAlign: 'left',
-    },
-    {
-        field: 'floor',
-        headerName: 'Floor',
-        type: 'string',
-        align: 'left',
-        width: 50,
-        headerAlign: 'left',
-    },
-    {
-        field: 'building_name',
-        headerName: 'Building',
-        type: 'string',
-        align: 'left',
-        width: 100,
-        headerAlign: 'left',
-    },
-    {
-        field: 'patient',
-        headerName: 'Patient',
-        type: 'singleSelect',
-        align: 'left',
-        width: 200,
-        headerAlign: 'left',
-        editable: true,
-        valueOptions: ({ row }) => {
-
-            // if (patientsNames !== null)
-            // {
-            //     return patientsNames
-            // }
-            // (async() => {
-            //     await axios.get<any, any>(`${baseHost}/api/patient/patients`)
-            // })()
-            // (async () => {
-            //     return await getPatientsNames()
-            // }
-            // )()
-            if (patientNames !== null)
-                return patientNames
-            // // else
-            // //     return []
-            // return row
-            return ["A", "B"]
-            // if (!row) {
-            //     // The row is not available when filtering this column
-            //     return ['Sales', 'Investments', 'Ads', 'Taxes', 'Payroll', 'Utilities'];
-            // }
-
-            // return row.type === 'Income' // Gets the value of the "type" field
-            //     ? ['Sales', 'Investments', 'Ads']
-            //     : ['Taxes', 'Payroll', 'Utilities'];
-        },
-        renderEditCell: (params) => <CustomEditComponent {...params} />,
-        renderCell: ({ value }) => {
-            // axios.
-            // console.log(value)
-            return (
-            <Box
-                sx={{
-                    display: "flex",
-                    width: "100%",
-                    justifyContent: "space-between",
-                    alignItems: "center"
-                }}
-            >
-                <div>{value}</div>
-                <ArrowDropDown />
-            </Box>
-        )}
-    },
-    {
-        field: 'staff',
-        headerName: 'Staff',
-        type: 'string',
-        editable: true,
-
-        align: 'left',
-        width: 200,
-        headerAlign: 'left',
-    },
-    {
-        field: 'admission_date',
-        headerName: 'Admission Date',
-        type: 'date',
-        align: 'left',
-        width: 150,
-        headerAlign: 'left',
-        valueFormatter: params => {
-            // console.log(params)
-            if (params.value != "Invalid Date")
-                return moment(params?.value).format("DD/MM/YYYY")
-            else
-                return "-"
-        }
-    },
-    {
-        field: "xxx",
-        headerName: "Empty the room",
-        // renderEditCell: (params: GridRenderEditCellParams) => (
-        //     <CustomEditComponent {...params} />
-        // ),
-        editable: true,
-        renderCell: (params: GridRenderCellParams) => {
-            // const _onClick = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-            const _onClick = () => {
-                params.row.patient = ""
-                params.row.staff = ""
-                params.row.admission_date = "Invalid Date"
-
-                axios.put(`${baseHost}/api/room`, {
-                    operation: "clear",
-                    room_id: params.row.room_id
-                }).then((res) => {
-                    console.log(`clear staff, patient from room id = ${params.row.room_id} and respnsed from server is`)
-                    console.log(res)
-                }).catch((err) => {
-                    console.error(err)
-                })
-            };
-            return <Button variant='outlined' color='success'
-                onClick={(e) => _onClick()}
-                size='small'
-            >
-                Clear
-            </Button>
-        },
-    },
-];
 
 const createOneRandomRow = () => {
     const obj: IRoom = {
@@ -259,10 +81,20 @@ const useFakeMutation = () => {
                     //     }
                     // })
 
+                    console.log("request to changing patient from room")
                     axios.put(`${baseHost}/api/room`, {
                         operation: "changePatient",
                         room_id : oldRoomToMutate.room_id,
                         patient_fullname_to_change: oldRoomToMutate.patient
+                        // patient_to: props.row.patient,
+                        // patient_to: props.row.patient
+                    })
+
+                    console.log("request to changing staff from room")
+                    axios.put(`${baseHost}/api/room`, {
+                        operation: "changeStaff",
+                        room_id : oldRoomToMutate.room_id,
+                        staff_fname_to_change: oldRoomToMutate?.staff?.trim().split(" ")[0]
                         // patient_to: props.row.patient,
                         // patient_to: props.row.patient
                     })
@@ -324,18 +156,25 @@ export default function EditableTable() {
             })
         })
 
-        getPatientsNames().then(ps => {
+        getPatientsNames().then((ps) => {
             if (ps !== null) {
-                patientNames = ps
+                setPatientsName(ps)
                 patientNames.push("") // empty people
                 console.log("set up patients name to room-page data".america)
-                // console.log("OK")
-                // console.log(ps)
             }
         }).catch((e) => {
             console.error(e)
         })
 
+        getStaffsName().then((s) => {
+            if (s !== null) {
+                setStaffsName(s)
+                staffNames.push("") // empty people
+                console.log("set up staff name to room-page data".america)
+            }
+        }).catch((e) => {
+            console.error(e)
+        })
     }, [])
 
     const handleCloseSnackbar = () => setSnackbar(null);
@@ -359,12 +198,17 @@ export default function EditableTable() {
     return (
         // <div style={{ height: 400, width: '100%' }}>
         <div style={{ height: '80vh', width: '100%' }}>
-            <DataGrid
+            {/* <StriptedData */}
+            <StripedDataGrid
                 rows={rows}
-                columns={columns}
+                columns={roomColumns}
                 // processRowUpdate={() => {console.log("updated")}}
                 processRowUpdate={processRowUpdate}
                 onProcessRowUpdateError={handleProcessRowUpdateError}
+                slots={{ toolbar: GridToolbar }}
+                getRowClassName={(params) =>
+                    params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                }
             />
             {!!snackbar && (
                 <Snackbar

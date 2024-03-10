@@ -1,6 +1,6 @@
 'use client'
 import BasicColumnsGrid from "@/app/components/datagrid"
-import EditableTable from "@/app/components/editable_grid/editable_grid"
+import EditableTable from "@/app/components/editable_grid/room_grid/room_grid"
 import FullFeaturedCrudGrid from "@/app/components/gridx"
 import Navbar from "@/app/components/navbar"
 import TikTok from "@/app/components/tiktok"
@@ -28,7 +28,9 @@ const RoomPage = () => {
 
 
 
-    return <div>
+    return <div style={{
+        // backgroundColor: "#404d75"
+    }}>
         {/* <TikTok isTick={true} size={64}/>
         <TikTok isTick={false}/> */}
         
