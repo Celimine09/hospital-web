@@ -58,6 +58,10 @@ body {
     width: 100%;
     /* height: 246px; */
     height: 100%;
+    height: 246px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
 }
 
 .box1 {
