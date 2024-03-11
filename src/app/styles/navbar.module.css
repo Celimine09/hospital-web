@@ -1,17 +1,22 @@
 .navbarButton {
-    background-color: #40679E;
-    padding: 10px 15px;
+    /* background-color: #40679E; */
+    background-color: #5296F4;
+    /* padding: 10px 15px; */
     color: white;
     text-decoration: none;
     margin-right: 20px;
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 18;
+    /* font-weight: bold; */
     border-radius: 10px;
     transition: background-color 0.3s ease;
     display: flex;
-    margin-top: 20px;
+    /* margin-top: 20px; */
+
+    /* height: 70%; */
+
+    /* aspect-ratio: 1; */
 }
 
 .navbarButton:hover{
-    background-color: #5296F4;
+    background-color: #9cc0f3;
 }

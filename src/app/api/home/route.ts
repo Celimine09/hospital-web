@@ -1,12 +1,14 @@
-import { RowDataPacket } from "mysql2/promise";
-import { connection } from "../../database/db.connector";
-import { NextResponse } from "next/server";
+import { RowDataPacket } from "mysql2";
+import {connection} from "../../database/db.connector"
 
 export async function GET() {
     try {
-        const [results1, fields1] = await connection.query<RowDataPacket[]>('select count(*) from Room r');
-        console.log(results1[0]);
-        console.log(fields1);
+        const [results, fields] = await connection.query<RowDataPacket[]>(
+            // 'SELECT * FROM `table` WHERE `name` = "Page" AND `age` > 45'
+            'select count(*) from Room r'
+        );
+        console.log(results[0]); // results contains rows returned by server
+        console.log(fields); // fields contains extra meta data about results, if available
     } catch (err) {
         console.log(err);
     }
