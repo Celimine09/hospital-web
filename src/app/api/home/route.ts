@@ -3,26 +3,21 @@ import {connection} from "../../database/db.connector"
 
 export async function GET() {
     try {
-        const [results, fields] = await connection.query<RowDataPacket[]>(
-            // 'SELECT * FROM `table` WHERE `name` = "Page" AND `age` > 45'
-            'select count(*) from Room r'
+        const [results1] = await connection.query<RowDataPacket[]>(
+            'SELECT COUNT(*) AS roomCount FROM Room r'
         );
-        console.log(results[0]); // results contains rows returned by server
-        console.log(fields); // fields contains extra meta data about results, if available
-    } catch (err) {
-        console.log(err);
-    }
+        const roomCount = results1[0].roomCount;
 
-    try {
-        const [results2, fields2] = await connection.query<RowDataPacket[]>('select count(*) from Staff s');
-        console.log(results2[0]);
-        console.log(fields2);
-    } catch (err) {
-        console.log(err);
-    }
+        const [results2] = await connection.query<RowDataPacket[]>(
+            'SELECT COUNT(*) AS staffCount FROM Staff s'
+        );
+        const staffCount = results2[0].staffCount;
 
-    return Response.json({
-        message: "GET"
-    });
+        return NextResponse.json({
+            roomCount,
+            staffCount,
+        });
+    } catch (err) {
+        console.error('Error fetching data:', err);
+    }
 }
-    
