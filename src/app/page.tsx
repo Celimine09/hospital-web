@@ -7,21 +7,22 @@ import Image from "next/image";
 import '../app/styles/home.css';
 
 const Homepage = () => {
-    const [roomCount, setRoomCount] = useState(0);
-    const [staffCount, setStaffCount] = useState(0);
+    const [numberOfRooms, setNumberOfRooms] = useState(0);
+    const [numberOfStaff, setNumberOfStaff] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const [error] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response1 = await fetch('http://localhost:3000/api/home');
-                const data1 = await response1.json();
-                setRoomCount(data1.roomCount);
-
-                const response2 = await fetch('http://localhost:3000/api/home');
-                const data2 = await response2.json();
-                setStaffCount(data2.staffCount);
-            } catch (error) {
-                console.error('Error fetching data: ', error);
+                const response = await fetch('http://localhost:3000/api/home');
+                const data = await response.json();
+                setNumberOfRooms(data.roomCount);
+                setNumberOfStaff(data.staffCount);
+            } catch (err) {
+                console.error('Error fetching data:', err);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -30,24 +31,30 @@ const Homepage = () => {
 
     return (
         <>
-            <Image src={"/images/backgrounds/homepagehos.png"}  alt="img" width="1600" height="380" />
-            <div className="box-container">
-                <div className="box1">
-                    <TrainIcon sx={{ fontSize: '50px'}}/>
-                    <h2>30 เมตรจาก BTS พญาไท</h2>
+            <Image src={"/images/backgrounds/homepagehos.png"} alt="img" width="1600" height="380" />
+            {loading ? (
+                <div>Loading...</div>
+            ) : error ? (
+                <div>{error}</div>
+            ) : (
+                <div className="box-container">
+                    <div className="box1">
+                        <TrainIcon sx={{ fontSize: '50px'}}/>
+                        <h2>30 เมตรจาก BTS พญาไท</h2>
+                    </div>
+                    <div className="box2">
+                        <BedIcon sx={{ fontSize: '50px'}}/>
+                        <h2>มีห้องว่างทั้งหมด {numberOfRooms} ห้อง</h2>
+                    </div>
+                    <div className="box3">
+                        <LocalHospitalIcon sx={{ fontSize: '50px'}}/>
+                        <h2>มีแพทย์กว่า {numberOfStaff} คน</h2>
+                    </div>
+                    <div className="box4">
+                        <h2>เปิดบริการ 24 ชั่วโมง</h2>  
+                    </div>
                 </div>
-                <div className="box2">
-                    <BedIcon sx={{ fontSize: '50px'}}/>
-                    <h2>มีห้องทั้งหมด {roomCount} ห้อง</h2>
-                </div>
-                <div className="box3">
-                    <LocalHospitalIcon sx={{ fontSize: '50px'}}/>
-                    <h2>มีแพทย์กว่า {staffCount} คน</h2>
-                </div>
-                <div className="box4">
-                    <h2>เปิดบริการ 24 ชั่วโมง</h2>  
-                </div>
-            </div>
+            )}
         </>
     );
 };
