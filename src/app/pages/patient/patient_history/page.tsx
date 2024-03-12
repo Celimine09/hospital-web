@@ -1,5 +1,6 @@
 'use client'
 import BasicColumnsGrid from "@/app/components/datagrid"
+import PatientHistoryTable from "@/app/components/editable_grid/patient_history/patient.history.grid"
 import EditableTable from "@/app/components/editable_grid/room_grid/room_grid"
 import FullFeaturedCrudGrid from "@/app/components/gridx"
 import Navbar from "@/app/components/navbar"
@@ -8,7 +9,7 @@ import { Button } from "@mui/material"
 import axios from "axios"
 import { useEffect, useState } from "react"
 
-const RoomPage = () => {
+const PatientHistory = () => {
     // let n : number = 10
     // const dummyHeros : IHero[] = [{heroName : "A", attackType: "A"}]
 
@@ -41,9 +42,9 @@ const RoomPage = () => {
             marginTop: "24px"
 
         }}>
-            <EditableTable />
+            <PatientHistoryTable />
         </div>
     </div>
 }
 
-export default RoomPage
+export default PatientHistory

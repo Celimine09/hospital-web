@@ -36,7 +36,7 @@ export default function Navbar() {
         </Toolbar>
       </AppBar> */}
 
-      <AppBar position="static">
+      <AppBar position="static" sx={{height: "10vh"}}>
         <Toolbar>
           <IconButton
             size="large"
@@ -55,7 +55,8 @@ export default function Navbar() {
           </Typography> */}
           <Navblock blockName="จัดการข้อมูลคนไข้" url="/"/>
           <Navblock blockName="จัดการข้อมูลบุคลากร" url="/"/>
-          <Navblock blockName="ดูห้องว่าง" url="pages/room"/>
+          <Navblock blockName="ดูห้องว่าง" url="/pages/room"/>
+          <Navblock blockName="เพิ่มประวัติคนไข้" url="/pages/patient/patient_history"/>
 
         </Toolbar>
       </AppBar>

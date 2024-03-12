@@ -1,5 +1,6 @@
 import { RowDataPacket } from "mysql2";
 import {connection} from "../../database/db.connector"
+import { NextResponse } from "next/server";
 
 export async function GET() {
     try {

@@ -23,6 +23,7 @@ import { getPatientsNames} from '@/app/service/patients.service';
 import { StripedDataGrid } from '../striped_datagrid';
 import { patientNames, roomColumns, setPatientsName, setStaffsName, staffNames } from './room.grid.columns';
 import { getStaffsName } from '@/app/service/stafff.service';
+import { setPatientsAndStaffDropdownData } from '@/app/utils/patient.staff.helper';
 
 
 // await axios.get<any, IResponseFromGettingPatientNames>(
@@ -156,25 +157,39 @@ export default function EditableTable() {
             })
         })
 
-        getPatientsNames().then((ps) => {
-            if (ps !== null) {
-                setPatientsName(ps)
-                patientNames.push("") // empty people
-                console.log("set up patients name to room-page data".america)
-            }
-        }).catch((e) => {
-            console.error(e)
-        })
+        // const setPatientsAndStaffDropdownData = (
+        //     setPatientsName: (pns: string[]) => void,
+        //     setStaffsName: (stns: string[])=> void,
+        //     patientNames: string[],
+        //     staffNames: string[],
+        //     ) => {
+        //     getPatientsNames().then((ps) => {
+        //         if (ps !== null) {
+        //             setPatientsName(ps)
+        //             patientNames.push("") // empty people
+        //             console.log("set up patients name to room-page data".america)
+        //         }
+        //     }).catch((e) => {
+        //         console.error(e)
+        //     })
 
-        getStaffsName().then((s) => {
-            if (s !== null) {
-                setStaffsName(s)
-                staffNames.push("") // empty people
-                console.log("set up staff name to room-page data".america)
-            }
-        }).catch((e) => {
-            console.error(e)
-        })
+        //     getStaffsName().then((s) => {
+        //         if (s !== null) {
+        //             setStaffsName(s)
+        //             staffNames.push("") // empty people
+        //             console.log("set up staff name to room-page data".america)
+        //         }
+        //     }).catch((e) => {
+        //         console.error(e)
+        //     })
+        // }
+        setPatientsAndStaffDropdownData(
+            setPatientsName,
+            setStaffsName,
+            patientNames,
+            staffNames
+        )
+
     }, [])
 
     const handleCloseSnackbar = () => setSnackbar(null);
