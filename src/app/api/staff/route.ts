@@ -1,5 +1,5 @@
 import { RowDataPacket } from "mysql2";
-import {connection} from "../../database/db.connector"
+import { connection } from "../../database/db.connector"
 import { NextRequest, NextResponse } from "next/server";
 
 

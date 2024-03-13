@@ -1,5 +1,5 @@
 import { RowDataPacket } from "mysql2";
-import {connection} from "../../database/db.connector"
+import { connection } from "../../database/db.connector"
 import { NextRequest, NextResponse } from "next/server";
 
 
@@ -67,8 +67,7 @@ export async function PUT(req: NextRequest) {
     console.log(data)
     console.log("PUT on backend /api/room")
 
-    if (data.operation === "clear" && data.room_id !== undefined)
-    {
+    if (data.operation === "clear" && data.room_id !== undefined) {
         console.log("Clear staff and patient from this room")
         try {
             const [results, fields] = await connection.query<RowDataPacket[]>(
@@ -92,12 +91,11 @@ export async function PUT(req: NextRequest) {
             })
         }
     }
-    else if (data.operation === "changeStaff")
-    {
+    else if (data.operation === "changeStaff") {
         console.log("change staff")
         console.log(data)
         try {
-            var name_to_change : string = data.staff_fname_to_change
+            var name_to_change: string = data.staff_fname_to_change
             console.log(name_to_change)
 
             if (name_to_change === "" || name_to_change === null)
@@ -130,12 +128,11 @@ export async function PUT(req: NextRequest) {
             })
         }
     }
-    else if (data.operation === "changePatient")
-    {
+    else if (data.operation === "changePatient") {
         console.log("change patient")
         console.log(data)
         try {
-            var name_to_change : string = data.patient_fullname_to_change
+            var name_to_change: string = data.patient_fullname_to_change
             name_to_change = name_to_change?.trim()
             name_to_change = name_to_change?.split(" ")[0]
             console.log(name_to_change)
@@ -170,8 +167,7 @@ export async function PUT(req: NextRequest) {
             })
         }
     }
-    else
-    {
+    else {
         return Response.json({
             status: `failed`,
             message: `put unknow operation`,
