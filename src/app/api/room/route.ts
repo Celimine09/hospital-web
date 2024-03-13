@@ -69,7 +69,7 @@ export async function PUT(req: NextRequest) {
 
     if (data.operation === "clear" && data.room_id !== undefined)
     {
-        console.log("Clear staff and patent from this room")
+        console.log("Clear staff and patient from this room")
         try {
             const [results, fields] = await connection.query<RowDataPacket[]>(
                 `
