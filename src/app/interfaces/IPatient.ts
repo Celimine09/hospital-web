@@ -9,13 +9,18 @@ export interface IResponseFromGettingPatientNames
 
 export interface IPatient
 {
+    id: number
     isNew: any
     p_id: number
-    patient_name: string
-    patient_sex: string
-    patient_birth: Date
-    patient_phone: string
-    patient_address: string
+    name: string
+    gender: string
+    birthday: Date
+    phone_no: string
+}
+
+export interface ResponsePatient {
+    status: string
+    patient? : IPatient[]
 }
 
 export interface IResponseFromGetPatientHistory

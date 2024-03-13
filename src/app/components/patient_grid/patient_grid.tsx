@@ -20,6 +20,7 @@ import {
   GridRowModel,
   GridRowEditStopReasons,
   GridToolbar,
+  GridValidRowModel,
 } from '@mui/x-data-grid';
 import {
   randomCreatedDate,
@@ -38,7 +39,7 @@ import { StripedDataGrid } from '../editable_grid/striped_datagrid';
 // import { patientNames, roomColumns, setPatientsName, setStaffsName, staffNames } from './room.grid.columns';
 import { getStaffsName } from '@/app/service/stafff.service';
 import { setPatientsAndStaffDropdownData } from '@/app/utils/patient.staff.helper';
-import { IPatient } from '@/app/interfaces/IPatient';
+import { IPatient, ResponsePatient } from '@/app/interfaces/IPatient';
 
 export var patientSex: string[] = ["F", "M"]
 export const setPatientsSex = (pns: string[]) => {
@@ -64,13 +65,14 @@ const EditToolbar: React.FC<EditToolbarProps> = ({ setRows, setRowModesModel }) 
   };
 
   return (
-    <GridToolbarContainer>
-      <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-        Add record
-      </Button>
-    </GridToolbarContainer>
+    <><GridToolbarContainer>
+          <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+              Add record
+          </Button>
+      </GridToolbarContainer><GridToolbar /></>
   );
 };
+
 const useFakeMutation = () => {
   return React.useCallback(
     // (oldRoomToMutate: Partial<IRoom>) =>
@@ -80,21 +82,6 @@ const useFakeMutation = () => {
         console.log("updated row ...".bgMagenta)
         console.log(oldRoomToMutate)
         setTimeout(() => {
-          // if (user.name?.trim() === '') {
-          //     reject(new Error("Error while saving user: name can't be empty."));
-          // } else {
-          //     resolve({ ...user, name: user.name?.toUpperCase() });
-          // }
-
-          // console.log("unlock...")
-          // axios({
-          //     method: 'PUT',
-          //     url: `${baseHost}/api/room`,
-          //     data: {
-          //         firstName: 'Fred',
-          //         lastName: 'Flintstone'
-          //     }
-          // })
 
           console.log("request to changing patient from room")
           axios.put(`${baseHost}/api/room`, {
@@ -113,14 +100,7 @@ const useFakeMutation = () => {
             // patient_to: props.row.patient,
             // patient_to: props.row.patient
           })
-
-
-
-
           resolve({ ...oldRoomToMutate })
-
-
-          // }, 200);
         }, 2000);
       }),
     [],
@@ -130,7 +110,37 @@ const useFakeMutation = () => {
 const FullFeaturedCrudGrid: React.FC = () => {
   const [rows, setRows] = React.useState<GridRowsProp<IPatient>>([])
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
-
+  axios.get(`${baseHost}/api/patient`).then((res: AxiosResponse<ResponsePatient>) => {
+    //console.log(res)
+    //console.log(res.data.patient)
+    if (res.data.patient) {
+        const modifiedRows = res.data.patient.map((pt: IPatient) => {
+            // console.log(`room bd[${rm.building_name}], floor[${rm.floor}]`)
+            return {
+                ...pt,
+                p_id: pt.p_id,
+                name: pt.name,
+                sex: pt.gender,
+                birthday: moment(pt.birthday).toDate(),
+                tel: pt.phone_no
+            }
+        })
+        //console.log(modifiedRows)
+        setRows(modifiedRows)
+        setSnackbar({
+            children: "Retrieved rooms data from server.",
+            // children: JSON.stringify(modifiedRows),
+            severity: "success"
+        })
+    }
+}).catch((err: any) => {
+    console.log("Error getting room data from backend.")
+    // console.error(err)
+    setSnackbar({
+        children: "Can not retrive rooms data from server...",
+        severity: "error"
+    })
+})
   const mutateRow = useFakeMutation();
   const [snackbar, setSnackbar] = React.useState<Pick<
     AlertProps,
@@ -149,6 +159,14 @@ const FullFeaturedCrudGrid: React.FC = () => {
 
   const handleSaveClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+
+    // axios.put(`${baseHost}/api/patient`, {
+    //     operation: "save",
+    //     room_id : oldRoomToMutate.room_id,
+    //     patient_fullname_to_change: oldRoomToMutate.patient
+    //     // patient_to: props.row.patient,
+    //     // patient_to: props.row.patient
+    // })
   };
 
   const handleDeleteClick = (id: GridRowId) => () => {
@@ -220,11 +238,15 @@ const FullFeaturedCrudGrid: React.FC = () => {
     {
       field: 'p_id',
       headerName: 'ID',
-      type: 'int',
+      type: 'string',
       width: 70,
       editable: true,
     },
-    { field: 'name', headerName: 'Name', width: 250, editable: true },
+    { field: 'name', 
+    headerName: 'Name', 
+    width: 250, 
+    editable: true,
+    type: 'string' },
     {
       field: 'sex',
       headerName: 'Sex',
@@ -319,16 +341,18 @@ const FullFeaturedCrudGrid: React.FC = () => {
       <DataGrid
         rows={rows}
         columns={columns}
+        getRowId={(row) => row.p_id}
         editMode="row"
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
         onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
         slots={{
-          toolbar: EditToolbar,
+          toolbar: EditToolbar
         }}
         slotProps={{
-          toolbar: { setRows, setRowModesModel },
+          toolbar: { setRows, setRowModesModel,toolbar: {
+          } },
         }}
       />
     </Box>

@@ -5,39 +5,24 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
     const sql_getPatientDatasWithNullIfExists =
-        `SELECT 
-        p_id
-        concat(fname, " ", lname) as patient,
+    `SELECT 
+        p_id,
+        concat(fname, " ", lname) as name,
         gender,
         birthday,
-        phone_no,
+        phone_no
         FROM Patient`
-    // `SELECT 
-    // concat(p.fname, " ", p.lname) as patient,
-    // concat(s.fname, " ", s.lname) as staff,
-    // r.room_number,
-    // rt.type_name AS room_type,
-    // mh.admission_date,
-    // r.floor,
-    // bd.building_name,
-    // r.room_id
-    // FROM Room r Left Join Patient p on r.patient_id = p.p_id
-    // Left Join Staff s ON s.s_id = r.staff_id
-    // Left Join RoomType rt on rt.rt_id = r.roomtype_id
-    // left join MedicalHistory mh on mh.patient_id = p.p_id
-    // left join Building bd on bd.b_id = r.building_id `
 
     try {
         const [results, fields] = await connection.query<RowDataPacket[]>(
             sql_getPatientDatasWithNullIfExists
-            // 'select * from Patient'
         );
-        console.log("Retrive patient data from backend".green)
-        console.log(results[0])
-        console.log(fields)
+        // console.log("Retrive patient data from backend".green)
+        // console.log(results[0])
+        // console.log(fields)
         return Response.json({
             status: "success",
-            // rooms: results
+            patient: results
         });
     } catch (err) {
         console.log(err);
@@ -60,33 +45,35 @@ export async function PUT(req: NextRequest) {
     console.log(data)
     console.log("PUT on backend /api/patient")
 
-    if (data.operation === "edit") {
-        console.log("change staff")
+    if (data.operation === "save") {
+        //console.log("change staff")
         console.log(data)
         try {
-            var name_to_change: string = data.staff_fname_to_change
-            console.log(name_to_change)
+            var fname: string = data.fname;
+            var lname: string = data.lname;
+            var phone_no: string = data.phone_no;
+            var gender: string = data.gender;
+            var birthday: string = data.birthday;
+            var p_id: number = data.p_id;
 
-            if (name_to_change === "" || name_to_change === null)
+            if (fname === "" || fname === null)
                 return;
 
             const sql = `
-            UPDATE  Room r 
-            SET     r.staff_id  = (
-                    SELECT s.s_id 
-                    FROM Staff s
-                    WHERE s.fname = '${name_to_change}'
-                    -- WHERE s.fname = '${'นานะ'}'
-                )
-            where r.room_id = ${data.room_id}
-
-            `
+            UPDATE Patient
+            SET fname = '${fname}',
+                lname = '${lname}',
+                phone_no = '${phone_no}',
+                gender = '${gender}',
+                birthday = '${birthday}'
+            WHERE p_id = ${p_id}
+            `;
             const [results, fields] = await connection.query<RowDataPacket[]>(
                 sql);
             console.log(results)
             return Response.json({
                 status: `success`,
-                message: `changed staff in room ${data.room_id}`,
+                message: `saved`,
                 // response: results
             });
         } catch (err) {
