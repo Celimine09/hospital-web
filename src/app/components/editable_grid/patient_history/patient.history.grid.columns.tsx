@@ -120,7 +120,7 @@ export const patientHistoryColumns: GridColDef[] = [
     },
     {
         field: "xxx",
-        headerName: "Empty the room",
+        headerName: "Delete History",
         // renderEditCell: (params: GridRenderEditCellParams) => (
         //     <CustomEditComponent {...params} />
         // ),
@@ -128,15 +128,16 @@ export const patientHistoryColumns: GridColDef[] = [
         renderCell: (params: GridRenderCellParams) => {
             // const _onClick = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
             const _onClick = () => {
-                params.row.patient = ""
-                params.row.staff = ""
-                params.row.admission_date = "Invalid Date"
-
-                axios.put(`${baseHost}/api/room`, {
-                    operation: "clear",
-                    room_id: params.row.room_id
+                axios.delete(`${baseHost}/api/patient/patients/history`, {
+                    params: {
+                        "history_id": params.row.history_id
+                    }
                 }).then((res) => {
-                    console.log(`clear staff, patient from room id = ${params.row.room_id} and respnsed from server is`)
+                    console.log("Delete history ?")
+                    if (res.data.status == "success")
+                    {
+                        // todo : rerender this page
+                    }
                     console.log(res)
                 }).catch((err) => {
                     console.error(err)
@@ -146,7 +147,7 @@ export const patientHistoryColumns: GridColDef[] = [
                 onClick={(e) => _onClick()}
                 size='small'
             >
-                Clear
+                Delete
             </Button>
         },
     },
