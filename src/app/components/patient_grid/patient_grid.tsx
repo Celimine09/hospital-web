@@ -66,10 +66,10 @@ const EditToolbar: React.FC<EditToolbarProps> = ({ setRows, setRowModesModel }) 
 
   return (
     <><GridToolbarContainer>
-          <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-              Add record
-          </Button>
-      </GridToolbarContainer><GridToolbar /></>
+      <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+        Add record
+      </Button>
+    </GridToolbarContainer><GridToolbar /></>
   );
 };
 
@@ -114,33 +114,33 @@ const FullFeaturedCrudGrid: React.FC = () => {
     //console.log(res)
     //console.log(res.data.patient)
     if (res.data.patient) {
-        const modifiedRows = res.data.patient.map((pt: IPatient) => {
-            // console.log(`room bd[${rm.building_name}], floor[${rm.floor}]`)
-            return {
-                ...pt,
-                p_id: pt.p_id,
-                name: pt.name,
-                sex: pt.gender,
-                birthday: moment(pt.birthday).toDate(),
-                tel: pt.phone_no
-            }
-        })
-        //console.log(modifiedRows)
-        setRows(modifiedRows)
-        setSnackbar({
-            children: "Retrieved rooms data from server.",
-            // children: JSON.stringify(modifiedRows),
-            severity: "success"
-        })
+      const modifiedRows = res.data.patient.map((pt: IPatient) => {
+        // console.log(`room bd[${rm.building_name}], floor[${rm.floor}]`)
+        return {
+          ...pt,
+          p_id: pt.p_id,
+          name: pt.name,
+          sex: pt.gender,
+          birthday: moment(pt.birthday).toDate(),
+          tel: pt.phone_no
+        }
+      })
+      //console.log(modifiedRows)
+      setRows(modifiedRows)
+      setSnackbar({
+        children: "Retrieved rooms data from server.",
+        // children: JSON.stringify(modifiedRows),
+        severity: "success"
+      })
     }
-}).catch((err: any) => {
+  }).catch((err: any) => {
     console.log("Error getting room data from backend.")
     // console.error(err)
     setSnackbar({
-        children: "Can not retrive rooms data from server...",
-        severity: "error"
+      children: "Can not retrive rooms data from server...",
+      severity: "error"
     })
-})
+  })
   const mutateRow = useFakeMutation();
   const [snackbar, setSnackbar] = React.useState<Pick<
     AlertProps,
@@ -242,11 +242,13 @@ const FullFeaturedCrudGrid: React.FC = () => {
       width: 70,
       editable: true,
     },
-    { field: 'name', 
-    headerName: 'Name', 
-    width: 250, 
-    editable: true,
-    type: 'string' },
+    {
+      field: 'name',
+      headerName: 'Name',
+      width: 250,
+      editable: true,
+      type: 'string'
+    },
     {
       field: 'sex',
       headerName: 'Sex',
@@ -351,8 +353,10 @@ const FullFeaturedCrudGrid: React.FC = () => {
           toolbar: EditToolbar
         }}
         slotProps={{
-          toolbar: { setRows, setRowModesModel,toolbar: {
-          } },
+          toolbar: {
+            setRows, setRowModesModel, toolbar: {
+            }
+          },
         }}
       />
     </Box>

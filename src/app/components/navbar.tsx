@@ -16,8 +16,8 @@ interface INavblock {
 const Navblock = (props: INavblock) => {
   return (
     <Button variant="outlined" className={Styles.navbarButton}>
-    {/* // <div className={Styles.navbarButton}> */}
-    {/* // <Button variant="outlined" > */}
+      {/* // <div className={Styles.navbarButton}> */}
+      {/* // <Button variant="outlined" > */}
       <Link href={props.url}>
         {props.blockName}
       </Link>
@@ -36,7 +36,7 @@ export default function Navbar() {
         </Toolbar>
       </AppBar> */}
 
-      <AppBar position="static" sx={{height: "10vh"}}>
+      <AppBar position="static" sx={{ height: "10vh" }}>
         <Toolbar>
           <IconButton
             size="large"
@@ -53,10 +53,10 @@ export default function Navbar() {
           {/* <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             News
           </Typography> */}
-          <Navblock blockName="จัดการข้อมูลคนไข้" url="/"/>
-          <Navblock blockName="จัดการข้อมูลบุคลากร" url="/"/>
-          <Navblock blockName="ดูห้องว่าง" url="/pages/room"/>
-          <Navblock blockName="เพิ่มประวัติคนไข้" url="/pages/patient/patient_history"/>
+          <Navblock blockName="จัดการข้อมูลคนไข้" url="/pages/patient" />
+          <Navblock blockName="จัดการข้อมูลบุคลากร" url="/pages/staff" />
+          <Navblock blockName="ดูห้องว่าง" url="/pages/room" />
+          <Navblock blockName="เพิ่มประวัติคนไข้" url="/pages/patient/patient_history" />
 
         </Toolbar>
       </AppBar>
