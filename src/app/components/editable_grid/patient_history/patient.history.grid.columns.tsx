@@ -14,9 +14,18 @@ import {
     GridEditSingleSelectCell,
     GridApi,
     GridTreeNodeWithRender,
+    GridRowModesModel,
+    GridToolbarContainer,
 } from '@mui/x-data-grid';
+import {
+    randomCreatedDate,
+    randomTraderName,
+    randomId,
+    randomArrayItem,
+} from '@mui/x-data-grid-generator';
 import axios from 'axios';
 import moment from 'moment';
+import AddIcon from '@mui/icons-material/Add';
 
 export var patientNames : string[] = []
 export var staffNames : string[] = []
@@ -152,7 +161,6 @@ export const patientHistoryColumns: GridColDef[] = [
         },
     },
 ];
-
 
 
 

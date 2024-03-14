@@ -1,7 +1,11 @@
 'use client'
 import * as React from 'react';
 import {
+    GridEventListener,
+    GridRowEditStopReasons,
+    GridRowId,
     GridRowModel,
+    GridRowModesModel,
     GridRowsProp,
     GridToolbar,
 } from '@mui/x-data-grid';
@@ -26,6 +30,8 @@ import { getStaffsName } from '@/app/service/stafff.service';
 import { IPatientHistory, IResponseFromGetPatientHistory } from '@/app/interfaces/IPatient';
 import { getRowIdFromRowModel } from '@mui/x-data-grid/internals';
 import { TruncateDateToSqlFormat } from '@/app/utils/date.api';
+import { HistoryEditToolbar } from './patient.history.grid.edit';
+import { GridRowModes } from '@mui/x-data-grid';
 
 
 
@@ -82,6 +88,7 @@ export default function PatientHistoryTable() {
         AlertProps,
         'children' | 'severity'
     > | null>(null);
+    const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
 
     // let rows: GridRowsProp<IRoom> = []
     const [rows, setRows] = React.useState<GridRowsProp<IPatientHistory>>([])
@@ -131,6 +138,46 @@ export default function PatientHistoryTable() {
         [mutateRow],
     );
 
+    const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
+        if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+            event.defaultMuiPrevented = true;
+        }
+    };
+
+    const handleEditClick = (id: GridRowId) => () => {
+        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    };
+
+    const handleSaveClick = (id: GridRowId) => () => {
+        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    };
+
+    const handleDeleteClick = (id: GridRowId) => () => {
+        setRows(rows.filter((row) => row.id !== id));
+    };
+
+    const handleCancelClick = (id: GridRowId) => () => {
+        setRowModesModel({
+            ...rowModesModel,
+            [id]: { mode: GridRowModes.View, ignoreModifications: true },
+        });
+
+        // const editedRow = rows.find((row) => row.id === id);
+        // if (editedRow!.isNew) {
+        //     setRows(rows.filter((row) => row.id !== id));
+        // }
+    };
+
+    // const processRowUpdate = (newRow: GridRowModel) => {
+    //     const updatedRow = { ...newRow, isNew: false };
+    //     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+    //     return updatedRow;
+    // };
+
+    const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
+        setRowModesModel(newRowModesModel);
+    };
+
     const handleProcessRowUpdateError = React.useCallback((error: Error) => {
         setSnackbar({ children: error.message, severity: 'error' });
     }, []);
@@ -145,10 +192,18 @@ export default function PatientHistoryTable() {
                 // processRowUpdate={() => {console.log("updated")}}
                 processRowUpdate={processRowUpdate}
                 onProcessRowUpdateError={handleProcessRowUpdateError}
-                slots={{ toolbar: GridToolbar }}
+                // slots={{ toolbar: GridToolbar }}
+                slots={{ toolbar: HistoryEditToolbar }}
+                slotProps={{
+                    toolbar: { setRows, setRowModesModel },
+                }}
                 getRowClassName={(params) =>
                     params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
                 }
+                editMode='row'
+                rowModesModel={rowModesModel}
+                onRowModesModelChange={handleRowModesModelChange}
+                onRowEditStop={handleRowEditStop}
             />
             {!!snackbar && (
                 <Snackbar
