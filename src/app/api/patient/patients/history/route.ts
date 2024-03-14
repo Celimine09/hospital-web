@@ -1,6 +1,7 @@
 import { RowDataPacket } from "mysql2";
 import {connection} from "@/app/database/db.connector"
 import { NextRequest, NextResponse } from "next/server";
+import { NextApiRequest } from "next";
 
 
 export async function GET(req: NextRequest) {
@@ -117,8 +118,28 @@ where mh.h_id = "${data.history_id}"
 }
 
 
-export async function DELETE() {
-    return Response.json({
-        message: `DELETE method called`,
-    });
+export async function DELETE(req: NextRequest) {
+    try {
+        const data = await req.json()
+        console.log("deleteing hsitory")
+        const sql = `
+    delete from MedicalHistory where h_id = "${data.history_id}"
+        `
+        const [results] = await connection.execute(sql)
+        // await connection.commit()
+        console.log(results)
+        return NextResponse.json({
+            stats: "success",
+            msg: `deleted`,
+            result: results
+        });
+    } catch (error) {
+        console.error(error)
+        return NextResponse.json({
+            stats: "failed",
+            msg: `history is not deleted`,
+            error: error
+        });
+        
+    }
 }
