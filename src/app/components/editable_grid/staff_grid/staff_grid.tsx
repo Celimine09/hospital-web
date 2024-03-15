@@ -250,13 +250,17 @@ const FullFeaturedCrudGrid: React.FC = () => {
 
     const handleDeleteClick = (id: GridRowId) => () => {
         const editedRow = rows.find((row) => row.s_id === id);
-        console.log(editedRow)
+        console.log(rows)
         if (editedRow) {
-            axios.delete(`${baseHost}/api/staff/${editedRow.s_id}`)
+            const requestData = {
+                s_id: editedRow.s_id,
+            }
+            console.log(editedRow.s_id)
+            axios.delete(`${baseHost}/api/staff/${editedRow.s_id}`, { data: requestData })
                 .then((res) => {
                     console.log("Staff member deleted successfully:", res.data);
                     // Remove the deleted row from the state
-                    setRows(rows.filter((row) => row.s_id !== id));
+                    //setRows(rows.filter((row) => row.s_id !== id));
                 })
                 .catch((err) => {
                     console.error("Error deleting staff member:", err);
@@ -277,7 +281,7 @@ const FullFeaturedCrudGrid: React.FC = () => {
             [id]: { mode: GridRowModes.View, ignoreModifications: true },
         });
 
-        const editedRow = rows.find((row) => row.s_id === id);
+        const editedRow = rows.find((row) => row.s_id == id);
         if (editedRow!.isNew) {
             setRows(rows.filter((row) => row.s_id !== id));
         }

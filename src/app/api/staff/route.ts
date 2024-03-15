@@ -106,16 +106,17 @@ export async function PUT(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
     try {
         const data = await req.json();
-        console.log(data);
+        console.log("Received data:", data);
 
-        const sqlDelete = `
+        const sql = `
             DELETE FROM Staff
             WHERE s_id = ${data.s_id}
         `;
 
-        const [results] = await connection.execute(sqlDelete, [data.s_id]);
-        console.log(results);
-
+        // const [results] = await connection.execute(sqlDelete, [data.s_id]);
+        // console.log(results);
+        const [results, fields] = await connection.query<RowDataPacket[]>(
+            sql);
         return Response.json({
             message: `DELETE method called`,
         });
