@@ -18,6 +18,8 @@ const LoginPage = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
+    sessionStorage.setItem('loggedIn','false')
+
     const handleLogin = () => {
         axios.post(`${baseHost}/api/login`, {
             username: username ,
