@@ -42,9 +42,6 @@ export default function PatientHistoryTable() {
     const [isCreatingNewRow, setIsCreatingNewRow] = React.useState<boolean>(false);
     const useFakeMutation = () => {
         return React.useCallback(
-            // (oldRoomToMutate: Partial<IRoom>) =>
-            //     new Promise<Partial<IRoom>>((resolve, reject) => {
-            // (oldRoomToMutate: Partial<any>) =>
             (newRowToUpdate: Partial<IPatientHistory>) =>
                 new Promise<Partial<IPatientHistory>>((resolve, reject) => {
                     console.log("Updating row ...")
@@ -288,12 +285,6 @@ export default function PatientHistoryTable() {
 
     const processRowUpdate = async (newRow: GridRowModel) => {
         const updatedRow = { ...newRow, isNew: false };
-        // setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-        // setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-        // return updatedRow;
-
-        // Make the HTTP request to save in the backend
-        // console.log("updated")
         const response = await mutateRow(newRow);
         setSnackbar({ children: 'User successfully saved', severity: 'success' });
         console.log("res from fake mutate")
@@ -302,34 +293,6 @@ export default function PatientHistoryTable() {
         return updatedRow;
     };
 
-    // const xprocessRowUpdate = React.useCallback(
-    //     // async (newRow: GridRowModel<IRoom>) => {
-
-    //     async (newRow: GridRowModel<IPatientHistory>) => {
-
-    //         if (newRow?.isNew) {
-    //             // todo : post
-    //         }
-    //         else {
-    //             // todo : put
-    //         }
-
-    //         const updatedRow = { ...newRow, isNew: false };
-    //         setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    //         // return updatedRow;
-
-    //         // Make the HTTP request to save in the backend
-    //         // console.log("updated")
-    //         const response = await mutateRow(newRow);
-    //         setSnackbar({ children: 'User successfully saved', severity: 'success' });
-    //         console.log("res from fake mutate")
-    //         console.log(response)
-    //         return response;
-    //         // return {id: getRowIdFromRowModel(newRow)};
-    //         // return {id:};
-    //     },
-    //     [mutateRow],
-    // );
 
     const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
         if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -376,13 +339,6 @@ export default function PatientHistoryTable() {
             setRows(rows.filter((row) => row.id !== id));
         }
     };
-
-    // const processRowUpdate = (newRow: GridRowModel) => {
-    //     const updatedRow = { ...newRow, isNew: false };
-    //     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    //     return updatedRow;
-    // };
-
     const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
         setRowModesModel(newRowModesModel);
     };
