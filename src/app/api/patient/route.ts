@@ -19,7 +19,7 @@ export async function GET() {
         );
         return Response.json({
             status: "success",
-            patient: results
+            // patient: results
         });
     } catch (err) {
         console.log(err);
