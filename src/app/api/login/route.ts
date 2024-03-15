@@ -1,46 +1,56 @@
+import { connection } from "@/app/database/db.connector";
+import { RowDataPacket } from "mysql2";
 import { NextRequest, NextResponse } from "next/server";
-import { connection } from "../../database/db.connector";
+import { json } from "stream/consumers";
 
-export async function GET() {
-    try {
-        const [results, fields] = await connection.query(
-            // Fname and password from staff
-            'SELECT fname FROM Staff'
-        );
-        console.log(results); // results contains rows returned by server
-        console.log(fields); // fields contains extra meta data about results, if available
+export async function GET(request: NextRequest) {
+        const [results] = await connection.query<RowDataPacket[]>(
+            `select * from Staff`
+        )
 
-        // Return the results from the database
-        return NextResponse.json({
-            success: true,
-            data: results // Sending data back to the client
-        });
+        const data = results.map((staff) => {
+            return {
+                "username": staff.fname,
+                "password": staff.password
+            }
+        })
 
-    } catch (err: any) { // Explicitly typing 'err' as 'any'
-        console.log(err);
-        return NextResponse.json({
-            success: false,
-            error: err.message // You can customize the error response as needed
-        }, { status: 500 }); // Set appropriate status code
-    }
 }
 
-export async function POST(req: NextRequest, res: NextResponse) {
-    try {
-        const data = await req.json();
-        console.log(data);
+export async function POST(request: NextRequest) {
+    const data = await request.json()
+    console.log(data)
+    // todo 1 ) get data from db (all usernames & pws)
+    // todo 2 ) is data from req matchs in db
 
-        // Process the data, maybe insert into database or perform other operations
 
-        return NextResponse.json({
-            success: true
-        });
+    const [results] = await connection.query<RowDataPacket[]>(
+        `select fname,password from Staff`
+    )
 
-    } catch (err: any) { // Explicitly typing 'err' as 'any'
-        console.log(err);
-        return NextResponse.json({
-            success: false,
-            error: err.message // You can customize the error response as needed
-        }, { status: 500 }); // Set appropriate status code
+    const datas = results.map((staff) => {
+        return {
+            "username": staff.fname,
+            "password": staff.password
+        }
+    })
+
+    const range = results.length;
+    var status:boolean = false;
+    console.log(status)
+
+    for(let i = 0 ; i < range ; i++){
+        if( data.username === results[i].fname && data.password === results[i].password) {
+            status = true;
+            console.log(status) 
+            break;
+        }
+
+        
     }
+
+    return Response.json({
+        status : status
+    })
+
 }
