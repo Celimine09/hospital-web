@@ -9,6 +9,14 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 
 const RoomPage = () => {
+
+    useEffect(() => {
+        sessionStorage.getItem('loggedIn');
+        const items = sessionStorage.getItem('loggedIn');
+        if (items != 'true') {
+            window.location.href = "http://localhost:3000/pages/login";
+        }
+    }, []);
     // let n : number = 10
     // const dummyHeros : IHero[] = [{heroName : "A", attackType: "A"}]
 
