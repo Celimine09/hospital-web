@@ -184,6 +184,15 @@ export default function PatientHistoryTable() {
             editable: true
         },
         {
+            field: 'bill_price',
+            headerName: 'Bill price',
+            type: 'string',
+            align: 'left',
+            width: 200,
+            headerAlign: 'left',
+            editable: true
+        },
+        {
             field: 'admission_date',
             headerName: 'Admission Date',
             type: 'date',
