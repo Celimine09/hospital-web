@@ -9,6 +9,14 @@ interface IHero {
 }
 
 const page = () => {
+
+    useEffect(() => {
+        sessionStorage.getItem('loggedIn');
+        const items = sessionStorage.getItem('loggedIn');
+        if (items != 'true') {
+            window.location.href = "http://localhost:3000/pages/login";
+        }
+    }, []);
     // let n : number = 10
     const [n, setN] = useState<number>(0)
     const dummyHeros: IHero[] = [{ heroName: "A", attackType: "A" }]

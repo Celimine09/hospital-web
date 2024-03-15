@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
     const sql_getPatientDatasWithNullIfExists =
-    `SELECT 
+        `SELECT 
         p_id,
         concat(fname, " ", lname) as name,
         gender,
@@ -17,12 +17,9 @@ export async function GET() {
         const [results, fields] = await connection.query<RowDataPacket[]>(
             sql_getPatientDatasWithNullIfExists
         );
-        // console.log("Retrive patient data from backend".green)
-        // console.log(results[0])
-        // console.log(fields)
         return Response.json({
             status: "success",
-            patient: results
+            // patient: results
         });
     } catch (err) {
         console.log(err);
@@ -38,28 +35,24 @@ export async function POST() {
     });
 }
 
-
 // export async function PUT(req: NextRequest, res: NextResponse) {
 export async function PUT(req: NextRequest) {
     const data = await req.json()
     console.log(data)
     console.log("PUT on backend /api/patient")
 
-    if (data.operation === "save") {
-        //console.log("change staff")
-        console.log(data)
-        try {
-            var fname: string = data.fname;
-            var lname: string = data.lname;
-            var phone_no: string = data.phone_no;
-            var gender: string = data.gender;
-            var birthday: string = data.birthday;
-            var p_id: number = data.p_id;
+    try {
+        var fname: string = data.fname;
+        var lname: string = data.lname;
+        var phone_no: string = data.phone_no;
+        var gender: string = data.gender;
+        var birthday: string = data.birthday;
+        var p_id: number = data.p_id;
 
-            if (fname === "" || fname === null)
-                return;
+        if (fname === "" || fname === null)
+            return;
 
-            const sql = `
+        const sql = `
             UPDATE Patient
             SET fname = '${fname}',
                 lname = '${lname}',
@@ -68,25 +61,21 @@ export async function PUT(req: NextRequest) {
                 birthday = '${birthday}'
             WHERE p_id = ${p_id}
             `;
-            const [results, fields] = await connection.query<RowDataPacket[]>(
-                sql);
-            console.log(results)
-            return Response.json({
-                status: `success`,
-                message: `saved`,
-                // response: results
-            });
-        } catch (err) {
-            console.log(err);
-            return Response.json({
-                status: "failed",
-                message: err
-            })
-        }
+        const [results, fields] = await connection.query<RowDataPacket[]>(
+            sql);
+        console.log(results)
+        return Response.json({
+            status: `success`,
+            message: `saved`,
+            // response: results
+        });
+    } catch (err) {
+        console.log(err);
+        return Response.json({
+            status: "failed",
+            message: err
+        })
     }
-    return Response.json({
-        message: `PUT method called`,
-    });
 }
 
 

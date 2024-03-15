@@ -1,4 +1,5 @@
-'use client'
+"use client"
+import { baseHost } from "@/app/constants/URLs";
 import { LockOutlined } from "@mui/icons-material";
 import {
     Container,
@@ -10,47 +11,38 @@ import {
     Button,
     Grid,
 } from "@mui/material";
+import axios from "axios";
 import { useState } from "react";
-// import { Link } from "react-router-dom";
 
-const Login = () => {
-    const [email, setEmail] = useState("");
+const LoginPage = () => {
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
+    sessionStorage.setItem('loggedIn','false')
+
     const handleLogin = () => {
-        // ส่งข้อมูล email และ password ไปยัง backend
-        fetch('your-login-endpoint', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password,
-            }),
+        axios.post(`${baseHost}/api/login`, {
+            username: username ,
+            password: password,
         })
-
-            //เว้นไว้รอเชื่อม back end
-            // .then(response => response.json())
-            // .then(data => {
-            //     // ตรวจสอบการตอบกลับจาก backend และดำเนินการต่อไปตามต้องการ
-            //     console.log(data);
-            //     if (data.success) {
-            //         // หากล็อคอินสำเร็จให้ redirect ไปที่หน้า main
-            //         window.location.href = "/main";
-            //     } else {
-            //         // หากล็อคอินไม่สำเร็จให้แสดงข้อความผิดพลาด
-            //         alert("Login failed. Please check your credentials.");
-            //     }
-            // })
-            // .catch(error => {
-            //     console.error('Error:', error);
-            //     // หากเกิดข้อผิดพลาดในการเชื่อมต่อกับ backend
-            //     alert("An error occurred. Please try again later.");
-            // });
-            window.location.href = "/";
+        .then(status => {
+            if (status.data.status === true) { // ตรวจสอบสถานะของการเข้าสู่ระบบที่ส่งกลับจากเซิร์ฟเวอร์
+                // หากล็อกอินสำเร็จให้ทำการ redirect ไปที่หน้า main
+                window.location.href = "http://localhost:3000";
+                logginIn(true)
+                console.log(sessionStorage)
+            } else {
+                // หากล็อกอินไม่สำเร็จให้แสดงข้อความผิดพลาด
+                alert("Login failed. Please check your username or password.");
+            }
+            console.log(status)
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // หากเกิดข้อผิดพลาดในการเชื่อมต่อกับ backend
+            alert("An error occurred. Please try again later.");
+        });
     };
-
 
     return (
         <>
@@ -73,12 +65,12 @@ const Login = () => {
                             margin="normal"
                             required
                             fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
+                            id="username"
+                            label="Username"
+                            name="username"
                             autoFocus
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                         />
 
                         <TextField
@@ -95,7 +87,6 @@ const Login = () => {
                             }}
                         />
                         
-                        {/* ตอนนี้ยังไม่ได้เชื่อม back end เลยทำให้กดแล้วเปลี่ยนหน้าเอา */}
                         <Button
                             fullWidth
                             variant="contained"
@@ -104,7 +95,6 @@ const Login = () => {
                         >
                             Login
                         </Button>
-
                     </Box>
                 </Box>
             </Container>
@@ -112,4 +102,10 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default LoginPage
+
+export async function logginIn(x: boolean) {
+    if (x === true){
+        sessionStorage.setItem('loggedIn','true');
+    }
+}
