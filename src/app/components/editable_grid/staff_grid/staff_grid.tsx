@@ -58,38 +58,21 @@ interface EditToolbarProps {
 const EditToolbar: React.FC<EditToolbarProps> = ({ setRows, setRowModesModel }) => {
     const handleClick = () => {
         const id = randomId();
-        // console.log(id)
-        // setRows((oldRows) => [...oldRows, {
-        //     id, name: 'prayutza',
-        //     age: 'M',
-        //     role_id: "90",
-        //     role_name: "doctor",
-        // }]);
-        // // setRows((oldRows) => [...oldRows, { id, name: '', age: '', isNew: true }]);
-        // // setRows((oldRows) => [...oldRows]);
-        // // setRows((oldRows) => [...oldRows, oldRows[0]]);
-        // setRowModesModel((oldModel) => ({
-        //     ...oldModel,
-        //     [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
-        // }));
+        setRows((oldRows) => [...oldRows, { id, name: '', age: '', isNew: true }]);
+    setRowModesModel((oldModel) => ({
+      ...oldModel,
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+    }));
+  };
 
-        axios.post(`${baseHost}/api/staff`, {
-            name: "Nmae",
-            sex: "M"
-        }).then((res) => {
-            console.log(res)
-        }).catch((err) => {
-            console.error(err)
-        })
-    };
-
-    return (
-        <><GridToolbarContainer>
-            <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-                Add record
-            </Button>
-        </GridToolbarContainer><GridToolbar /></>
-    );
+  return (
+    <><GridToolbarContainer>
+      <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+        Add record
+      </Button>
+    </GridToolbarContainer><GridToolbar /></>
+  );
+        
 };
 
 const useFakeMutation = () => {
@@ -124,22 +107,6 @@ const useFakeMutation = () => {
                     }
 
                     console.log("request to changing patient from room")
-                    // axios.put(`${baseHost}/api/room`, {
-                    //     operation: "changePatient",
-                    //     room_id: oldRoomToMutate.room_id,
-                    //     patient_fullname_to_change: oldRoomToMutate.patient
-                    //     // patient_to: props.row.patient,
-                    //     // patient_to: props.row.patient
-                    // })
-
-                    // console.log("request to changing staff from room")
-                    // axios.put(`${baseHost}/api/room`, {
-                    //     operation: "changeStaff",
-                    //     room_id: oldRoomToMutate.room_id,
-                    //     staff_fname_to_change: oldRoomToMutate?.staff?.trim().split(" ")[0]
-                    //     // patient_to: props.row.patient,
-                    //     // patient_to: props.row.patient
-                    // })
                     resolve({ ...editedRow })
                 }, 2000);
             }),
