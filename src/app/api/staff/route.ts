@@ -66,48 +66,64 @@ export async function POST(request: NextRequest) {
 // export async function PUT(req: NextRequest, res: NextResponse) {
 export async function PUT(req: NextRequest) {
     try {
-        const data = await req.json()
-        console.log(data)
+        const data = await req.json();
+        console.log("Received data:", data);
+        if (data.s_id !== undefined) {
+            const sql = `
+                UPDATE Staff
+                SET fname = '${data.name.split(' ')[0]}',
+                    lname = '${data.name.split(' ')[1]}',
+                    gender = '${data.gender}',
+                    role_id = '${data.role_id}'
+                WHERE s_id = '${data.s_id}'
+            `;
+            console.log("SQL query:", sql);
+            console.log("SQL parameters:", [data.gender, data.role_id, data.role_name, data.s_id]);
 
-        const sqlUpdate = `
-            insert into Staff(fname="") values (${data.fname})
-        `
-
-        const [results] = await connection.execute(sqlUpdate)
-        console.log(results)
-        return Response.json({
-            message: `PUT method called`,
-        });
+            const [results, fields] = await connection.query<RowDataPacket[]>(
+                sql);
+            console.log("SQL execution results:", results); return Response.json({
+                message: `PUT method called`,
+            });
+        } else {
+            // Handle the case where data.gender or data.s_id is undefined
+            return Response.json({
+                status: "failed",
+                message: "Gender or s_id is undefined",
+            });
+        }
     } catch (error) {
-        console.log(error)
+        console.log(error);
         return Response.json({
             status: "failed",
-            message: error
-        })
+            message: error,
+        });
     }
-
 }
+
 
 // ? drop data ...
 export async function DELETE(req: NextRequest) {
     try {
-        const data = await req.json()
-        console.log(data)
+        const data = await req.json();
+        console.log(data);
 
         const sqlDelete = `
-            
-        `
+            DELETE FROM Staff
+            WHERE s_id = ${data.s_id}
+        `;
 
-        const [results] = await connection.execute(sqlDelete)
-        console.log(results)
+        const [results] = await connection.execute(sqlDelete, [data.s_id]);
+        console.log(results);
+
         return Response.json({
             message: `DELETE method called`,
         });
     } catch (error) {
-        console.log(error)
+        console.log(error);
         return Response.json({
             status: "failed",
-            message: error
-        })
+            message: error,
+        });
     }
 }
