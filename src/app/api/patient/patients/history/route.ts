@@ -63,10 +63,54 @@ left join Staff s ON s.s_id = mh.doctor_id
     }
 }
 
-export async function POST() {
-    return Response.json({
-        message: `POST method called`,
-    });
+export async function POST(req: NextRequest) {
+    const data = await req.json()
+    console.log("Requets from History POST is ...")
+    console.log(data)
+    const sql = `
+    INSERT INTO MedicalHistory (
+        patient_id, doctor_id, simple_diagnosis,
+        diagnosis_desc, admission_date, discharge_date,
+        bill_price
+    )
+    SELECT
+        patient_subquery.p_id,
+        staff_subquery.s_id,
+        "${data.simple_diagnosis}",
+        "${data.diagnosis_desc}",
+        ${data.admission_date},
+        ${data.discharge_date},
+        ${data.bill_price}
+    FROM
+        (
+            SELECT p_id
+            FROM Patient
+            -- WHERE CONCAT(fname, " ", lname) = "${data.patient_name}"
+            WHERE CONCAT(fname, " ", lname) = "นาทีทอง มองอะไร"
+        ) AS patient_subquery
+    CROSS JOIN
+        (
+            SELECT s_id
+            FROM Staff
+            -- WHERE CONCAT(fname, " ", lname) = "ชลที มียา"
+            WHERE CONCAT(fname, " ", lname) = "${data.doctor_name}"
+        ) AS staff_subquery;
+    
+`
+console.log(sql)
+    try {
+        const res  = await connection.execute<any>(sql)
+        console.log(res)
+        return Response.json({
+            status: "success",
+            message: res[0]
+        });
+    } catch (error) {
+        return Response.json({
+            status: "failed",
+            error: error
+        });
+    }
 }
 
 
@@ -121,13 +165,15 @@ where mh.h_id = "${data.history_id}"
 export async function DELETE(req: NextRequest) {
     try {
         const data = await req.json()
-        console.log("deleteing hsitory")
+        console.log("deleting history from DELETE http method")
+        console.log(data)
         const sql = `
-    delete from MedicalHistory where h_id = "${data.history_id}"
+    delete from MedicalHistory where h_id = "${data.history_id}";
         `
+        console.log(sql)
         const [results] = await connection.execute(sql)
-        // await connection.commit()
         console.log(results)
+        await connection.commit()
         return NextResponse.json({
             stats: "success",
             msg: `deleted`,

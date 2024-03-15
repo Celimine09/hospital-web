@@ -26,11 +26,14 @@ interface EditToolbarProps<T extends GridValidRowModel> {
     setRowModesModel: (
         newModel: (oldModel: GridRowModesModel) => GridRowModesModel,
     ) => void;
+    // isCreatingNewRow: boolean
+    // setIsCreatingNewRow: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 // export const HistoryEditToolbar: React.FC<EditToolbarProps> = ({ setRows, setRowModesModel }) => {
 export const HistoryEditToolbar: React.FC<EditToolbarProps<IPatientHistory>> = (props:EditToolbarProps<IPatientHistory>) => {
-    const { setRows, setRowModesModel } = props;
+    // const { setRows, setRowModesModel, isCreatingNewRow, setIsCreatingNewRow } = props;
+    const { setRows, setRowModesModel} = props;
     const handleClick = () => {
         const id = randomId();
         // setRows((oldRows) => [...oldRows, { id, name: '', age: '', isNew: true }]);
@@ -45,15 +48,19 @@ export const HistoryEditToolbar: React.FC<EditToolbarProps<IPatientHistory>> = (
             diagnosis_desc: "",
             admission_date: moment().toDate(),
             discharge_date: moment().toDate(),
-            bill_price: 0
+            bill_price: 0,
+            isNew: true
         }]
         );
         console.log(`Addeding new row id = ${id}`)
         // setRows((oldRows) => [...oldRows]);
         setRowModesModel((oldModel) => ({
             ...oldModel,
-            [id]: { mode: GridRowModes.Edit, fieldToFocus: 'simple_diagnosis' },
+            // [id]: { mode: GridRowModes.Edit, fieldToFocus: 'simple_diagnosis' },
+            [id]: { mode: GridRowModes.Edit, fieldToFocus: 'patient_name' },
         }))
+        // setIsCreatingNewRow(true)
+        // console.log(`set is creating new row = ${isCreatingNewRow} on grid.edit file.`)
     };
 
     return (

@@ -56,4 +56,5 @@ export interface IPatientHistory
     admission_date: Date
     discharge_date: Date
     bill_price: number
+    isNew?: boolean
 }
