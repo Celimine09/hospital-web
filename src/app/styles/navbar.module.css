@@ -1,8 +1,12 @@
 .navbarButton {
     /* background-color: #40679E; */
-    background-color: #5296F4;
     /* padding: 10px 15px; */
+
+    /* background-color: #5296F4; */
+    /* background-color: #04285c; */
+    background-color: #3763a0;
     color: white;
+
     text-decoration: none;
     margin-right: 20px;
     font-size: 18;

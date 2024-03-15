@@ -7,6 +7,8 @@ import Styles from '../styles/navbar.module.css';
 import { IconButton, Typography } from "@mui/material";
 import { LocalHospital, Menu } from "@mui/icons-material";
 import Link from "next/link";
+import ThemeToggler from "./themeToggler/theme.toggler";
+import { baseHost } from "../constants/URLs";
 
 interface INavblock {
   blockName: string;
@@ -46,7 +48,7 @@ export default function Navbar() {
             sx={{ mr: 2 }}
           >
             {/* <Menu/> */}
-            <Link href={"/"}>
+            <Link href={`${baseHost}`}>
               <LocalHospital />
             </Link>
           </IconButton>
@@ -57,6 +59,12 @@ export default function Navbar() {
           <Navblock blockName="จัดการข้อมูลบุคลากร" url="/pages/staff" />
           <Navblock blockName="ดูห้องว่าง" url="/pages/room" />
           <Navblock blockName="เพิ่มประวัติคนไข้" url="/pages/patient/patient_history" />
+
+          <div style={{
+            marginLeft: "auto"
+          }}>
+            <ThemeToggler />
+          </div>
 
         </Toolbar>
       </AppBar>

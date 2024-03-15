@@ -12,5 +12,6 @@ export const TruncateDateToSqlFormat = (date: Date | null | undefined | string) 
 
     const d = moment(date).format("YYYY/MM/DD")
     return `'${d}'`
+    // return `${d}`
 
 }
