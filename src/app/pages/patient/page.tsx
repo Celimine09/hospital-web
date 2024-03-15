@@ -1,6 +1,6 @@
 'use client';
 import MySearchBar from "@/app/components/searchbar/MySearchBar"
-import ServerSidePersistence from "@/app/components/patient_grid/patient_grid"
+import ServerSidePersistence from "@/app/components/editable_grid/patient_grid/patient_grid"
 import { useEffect, useState } from "react"
 
 interface IHero {

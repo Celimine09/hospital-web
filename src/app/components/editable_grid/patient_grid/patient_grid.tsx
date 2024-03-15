@@ -35,7 +35,7 @@ import moment from "moment"
 import { randomNumberBetween } from '@mui/x-data-grid/utils/utils';
 import { baseHost } from '@/app/constants/URLs';
 import { getPatientsNames } from '@/app/service/patients.service';
-import { StripedDataGrid } from '../editable_grid/striped_datagrid';
+import { StripedDataGrid } from '../striped_datagrid';
 // import { patientNames, roomColumns, setPatientsName, setStaffsName, staffNames } from './room.grid.columns';
 import { getStaffsName } from '@/app/service/stafff.service';
 import { setPatientsAndStaffDropdownData } from '@/app/utils/patient.staff.helper';
@@ -77,34 +77,39 @@ const useFakeMutation = () => {
   return React.useCallback(
     // (oldRoomToMutate: Partial<IRoom>) =>
     //     new Promise<Partial<IRoom>>((resolve, reject) => {
-    (oldRoomToMutate: Partial<any>) =>
-      new Promise<Partial<any>>((resolve, reject) => {
-        console.log("updated row ...".bgMagenta)
-        console.log(oldRoomToMutate)
-        setTimeout(() => {
+    (editedRow: Partial<any>) =>
+        new Promise<Partial<any>>((resolve, reject) => {
+            console.log("updated row ...".bgMagenta)
+            setTimeout(() => {
+                console.log(editedRow)
 
-          console.log("request to changing patient from room")
-          axios.put(`${baseHost}/api/room`, {
-            operation: "changePatient",
-            room_id: oldRoomToMutate.room_id,
-            patient_fullname_to_change: oldRoomToMutate.patient
-            // patient_to: props.row.patient,
-            // patient_to: props.row.patient
-          })
+                if (editedRow) { // Check if editedRow is not undefined
+                    axios.put(`${baseHost}/api/patient`, {
+                      p_id: editedRow.p_id,
+                      name: editedRow.name,
+                      gender: editedRow.gender,
+                      birthday:editedRow.birthday,
+                      phone_no:editedRow.phone_no
+                    })
+                        .then((res) => {
+                            console.log("Patient member updated successfully:", res.data);
+                            // You might want to handle success feedback here
+                        })
+                        .catch((err) => {
+                            console.error("Error updating patient member:", err);
+                            // Handle error feedback here
+                        });
+                } else {
+                    console.error("Edited row not found or is undefined.");
+                    // Handle error feedback here
+                }
 
-          console.log("request to changing staff from room")
-          axios.put(`${baseHost}/api/room`, {
-            operation: "changeStaff",
-            room_id: oldRoomToMutate.room_id,
-            staff_fname_to_change: oldRoomToMutate?.staff?.trim().split(" ")[0]
-            // patient_to: props.row.patient,
-            // patient_to: props.row.patient
-          })
-          resolve({ ...oldRoomToMutate })
-        }, 2000);
-      }),
+                console.log("request to changing patient from room")
+                resolve({ ...editedRow })
+            }, 2000);
+        }),
     [],
-  );
+);
 };
 
 const FullFeaturedCrudGrid: React.FC = () => {
@@ -120,7 +125,7 @@ const FullFeaturedCrudGrid: React.FC = () => {
           ...pt,
           p_id: pt.p_id,
           name: pt.name,
-          sex: pt.gender,
+          gender: pt.gender,
           birthday: moment(pt.birthday).toDate(),
           tel: pt.phone_no
         }
@@ -155,18 +160,58 @@ const FullFeaturedCrudGrid: React.FC = () => {
 
   const handleEditClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+        const editedRow = rows.find((row) => row.p_id === id);
+
+        console.log(editedRow)
+
+        if (editedRow) { // Check if editedRow is not undefined
+            axios.put(`${baseHost}/api/patient`, {
+                p_id: editedRow.p_id,
+                name: editedRow.name,
+                gender: editedRow.gender,
+                birthday:editedRow.birthday,
+                phone_no:editedRow.phone_no
+            })
+                .then((res) => {
+                    console.log("Patient member updated successfully:", res.data);
+                    // You might want to handle success feedback here
+                })
+                .catch((err) => {
+                    console.error("Error updating patient member:", err);
+                    // Handle error feedback here
+                });
+        } else {
+            console.error("Edited row not found or is undefined.");
+            // Handle error feedback here
+        }
+        console.log(rowModesModel)
   };
 
   const handleSaveClick = (id: GridRowId) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-
-    // axios.put(`${baseHost}/api/patient`, {
-    //     operation: "save",
-    //     room_id : oldRoomToMutate.room_id,
-    //     patient_fullname_to_change: oldRoomToMutate.patient
-    //     // patient_to: props.row.patient,
-    //     // patient_to: props.row.patient
-    // })
+    const editedRow = rows.find((row) => row.p_id === id);
+        console.log(editedRow)
+        if (editedRow) {
+            const requestData = {
+              p_id: editedRow.p_id,
+              name: editedRow.name,
+              gender: editedRow.gender,
+              birthday:editedRow.birthday,
+              phone_no:editedRow.phone_no
+            };// Check if editedRow is not undefined
+            axios.put(`${baseHost}/api/patient/${editedRow.p_id}`, requestData)
+                .then((res) => {
+                    console.log("Patient member updated successfully:", res.data);
+                    // You might want to handle success feedback here
+                })
+                .catch((err) => {
+                    console.error("Error updating patient member:", err);
+                    // Handle error feedback here
+                });
+        } else {
+            console.error("Edited row not found or is undefined.");
+            // Handle error feedback here
+        }
+        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
   const handleDeleteClick = (id: GridRowId) => () => {
@@ -250,7 +295,7 @@ const FullFeaturedCrudGrid: React.FC = () => {
       type: 'string'
     },
     {
-      field: 'sex',
+      field: 'gender',
       headerName: 'Sex',
       type: 'singleSelect',
       width: 130,
