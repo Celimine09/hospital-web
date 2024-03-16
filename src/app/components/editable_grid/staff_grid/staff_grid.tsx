@@ -72,6 +72,7 @@ const EditToolbar: React.FC<EditToolbarProps> = ({ setRows, setRowModesModel }) 
             isNew: true
         }]
         );
+        
         console.log(`Addeding new row id = ${newId}`)
         setRowModesModel((oldModel) => ({
             ...oldModel,
@@ -412,6 +413,7 @@ const FullFeaturedCrudGrid: React.FC = () => {
                 rows={rows}
                 columns={columns}
                 getRowId={(row) => row.s_id}
+                //getRowId={(row) => row.id} 
                 editMode="row"
                 rowModesModel={rowModesModel}
                 onRowModesModelChange={handleRowModesModelChange}
