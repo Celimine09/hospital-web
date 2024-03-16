@@ -98,22 +98,6 @@ export async function PUT(req: NextRequest) {
 }
 
 // ? drop data ...
-async function getRandomDoctorId(): Promise<number | null> {
-    try {
-        const [results, fields] = await connection.query<RowDataPacket[]>(
-            "SELECT doctor_id FROM MedicalHistory ORDER BY RAND() LIMIT 1"
-        );
-        if (results.length > 0) {
-            return results[0].doctor_id;
-        } else {
-            return null;
-        }
-    } catch (error) {
-        console.error("Error fetching random doctor_id:", error);
-        return null;
-    }
-}
-
 export async function DELETE(req: NextRequest) {
     try {
         const data = await req.json();
@@ -128,14 +112,8 @@ export async function DELETE(req: NextRequest) {
         const [updateResults] = await connection.execute(sqlUpdateRooms);
         console.log(updateResults);
 
-        const randomDoctorId = await getRandomDoctorId();
-        if (randomDoctorId === null) {
-            throw new Error("No existing doctor_id records found");
-        }
-
         const sqlUpdateMedicalHistory = `
-            UPDATE MedicalHistory 
-            SET doctor_id = ${randomDoctorId} 
+            DELETE FROM MedicalHistory  
             WHERE doctor_id = "${data.s_id}";
         `;
         console.log(sqlUpdateMedicalHistory);

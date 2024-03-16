@@ -57,7 +57,7 @@ interface EditToolbarProps {
 const EditToolbar: React.FC<EditToolbarProps> = ({ setRows, setRowModesModel }) => {
   const handleClick = () => {
     const id = randomId();
-    setRows((oldRows) => [...oldRows, { id:id, name: '', age: '', isNew: true }]);
+    setRows((oldRows) => [...oldRows, { id: id, name: '', age: '', isNew: true }]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
       [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
@@ -78,59 +78,59 @@ const useFakeMutation = () => {
     // (oldRoomToMutate: Partial<IRoom>) =>
     //     new Promise<Partial<IRoom>>((resolve, reject) => {
     (editedRow: Partial<any>) =>
-        new Promise<Partial<any>>((resolve, reject) => {
-            console.log("updated row ...".bgMagenta)
-            setTimeout(() => {
-                console.log(editedRow)
+      new Promise<Partial<any>>((resolve, reject) => {
+        console.log("updated row ...".bgMagenta)
+        setTimeout(() => {
+          console.log(editedRow)
 
-                if (!editedRow.isnew) { // Check if editedRow is not undefined
-                    axios.put(`${baseHost}/api/patient`, {
-                      p_id: editedRow.p_id,
-                      name: editedRow.name,
-                      gender: editedRow.gender,
-                      birthday:editedRow.birthday,
-                      phone_no:editedRow.phone_no
-                    })
-                        .then((res) => {
-                            console.log("Patient member updated successfully:", res.data);
-                            // You might want to handle success feedback here
-                        })
-                        .catch((err) => {
-                            console.error("Error updating patient member:", err);
-                            // Handle error feedback here
-                        });
-                } else {
-                  axios.put(`${baseHost}/api/patient/patients`,
-                  {
-                      ...editedRow,
-                  }
-              ).then((res) => {
-                  console.log(res)
-                  if (res.data.status === "success") {
-                      console.log("updated row")
-                      editedRow.isNew = false
-                      resolve({ ...editedRow })
-                  }
-                  else {
-                      console.log("Error updating row")
-                      console.log(res.data)
-                      // newRowToUpdate.isNew = false
-                      // reject({...newRowToUpdate})
-                      reject(res.data.error)
-                  }
-              }).catch((err) => {
-                  console.log(err)
-                  // reject({...newRowToUpdate})
-                  reject(err)
+          if (!editedRow.isnew) { // Check if editedRow is not undefined
+            axios.put(`${baseHost}/api/patient`, {
+              p_id: editedRow.p_id,
+              name: editedRow.name,
+              gender: editedRow.gender,
+              birthday: editedRow.birthday,
+              phone_no: editedRow.phone_no
+            })
+              .then((res) => {
+                console.log("Patient member updated successfully:", res.data);
+                // You might want to handle success feedback here
               })
-                }
-
-                console.log("request to changing patient from room")
+              .catch((err) => {
+                console.error("Error updating patient member:", err);
+                // Handle error feedback here
+              });
+          } else {
+            axios.put(`${baseHost}/api/patient/patients`,
+              {
+                ...editedRow,
+              }
+            ).then((res) => {
+              console.log(res)
+              if (res.data.status === "success") {
+                console.log("updated row")
+                editedRow.isNew = false
                 resolve({ ...editedRow })
-            }, 2000);
-        }),
+              }
+              else {
+                console.log("Error updating row")
+                console.log(res.data)
+                // newRowToUpdate.isNew = false
+                // reject({...newRowToUpdate})
+                reject(res.data.error)
+              }
+            }).catch((err) => {
+              console.log(err)
+              // reject({...newRowToUpdate})
+              reject(err)
+            })
+          }
+
+          console.log("request to changing patient from room")
+          resolve({ ...editedRow })
+        }, 2000);
+      }),
     [],
-);
+  );
 };
 
 const FullFeaturedCrudGrid: React.FC = () => {
@@ -175,57 +175,71 @@ const FullFeaturedCrudGrid: React.FC = () => {
 
   const handleEditClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-        const editedRow = rows.find((row) => row.p_id === id);
+    const editedRow = rows.find((row) => row.p_id === id);
 
-        console.log(editedRow)
+    console.log(editedRow)
 
-        if (editedRow) { // Check if editedRow is not undefined
-            axios.put(`${baseHost}/api/patient`, {
-                p_id: editedRow.p_id,
-                name: editedRow.name,
-                gender: editedRow.gender,
-                birthday:editedRow.birthday,
-                phone_no:editedRow.phone_no
-            })
-                .then((res) => {
-                    console.log("Patient member updated successfully:", res.data);
-                })
-                .catch((err) => {
-                    console.error("Error updating patient member:", err);
-                });
-        } else {
-            console.error("Edited row not found or is undefined.");
-        }
-        console.log(rowModesModel)
+    if (editedRow) { // Check if editedRow is not undefined
+      axios.put(`${baseHost}/api/patient`, {
+        p_id: editedRow.p_id,
+        name: editedRow.name,
+        gender: editedRow.gender,
+        birthday: editedRow.birthday,
+        phone_no: editedRow.phone_no
+      })
+        .then((res) => {
+          console.log("Patient member updated successfully:", res.data);
+        })
+        .catch((err) => {
+          console.error("Error updating patient member:", err);
+        });
+    } else {
+      console.error("Edited row not found or is undefined.");
+    }
+    console.log(rowModesModel)
   };
 
   const handleSaveClick = (id: GridRowId) => () => {
     const editedRow = rows.find((row) => row.p_id === id);
-        console.log(editedRow)
-        if (editedRow) {
-            const requestData = {
-              p_id: editedRow.p_id,
-              name: editedRow.name,
-              gender: editedRow.gender,
-              birthday:editedRow.birthday,
-              phone_no:editedRow.phone_no
-            };
-            axios.put(`${baseHost}/api/patient/${editedRow.p_id}`, requestData)
-                .then((res) => {
-                    console.log("Patient member updated successfully:", res.data);
-                })
-                .catch((err) => {
-                    console.error("Error updating patient member:", err);
-                });
-        } else {
-            console.error("Edited row not found or is undefined.");
-            // Handle error feedback here
-        }
-        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    console.log(editedRow)
+    if (editedRow) {
+      const requestData = {
+        p_id: editedRow.p_id,
+        name: editedRow.name,
+        gender: editedRow.gender,
+        birthday: editedRow.birthday,
+        phone_no: editedRow.phone_no
+      };
+      axios.put(`${baseHost}/api/patient/${editedRow.p_id}`, requestData)
+        .then((res) => {
+          console.log("Patient member updated successfully:", res.data);
+        })
+        .catch((err) => {
+          console.error("Error updating patient member:", err);
+        });
+    } else {
+      console.error("Edited row not found or is undefined.");
+      // Handle error feedback here
+    }
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
   const handleDeleteClick = (id: GridRowId) => () => {
     setRows(rows.filter((row) => row.p_id !== id));
+
+    console.log(`row to delete is ${id}`)
+    axios.delete(`${baseHost}/api/patient`, {
+      data: {
+        "p_id": id
+      }
+    }).then((res) => {
+      console.log("Delete patient ?")
+      console.log(res)
+      if (res.data.status == "success") {
+      }
+    }).catch((err) => {
+      console.error(err)
+    })
   };
 
   const handleCancelClick = (id: GridRowId) => () => {

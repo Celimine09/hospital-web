@@ -62,8 +62,8 @@ export async function PUT(req: NextRequest) {
         console.log("Received data:", data);
         if (data.p_id !== undefined) {
             const birthday = new Date(data.birthday);
-                // Format the birthday date to MySQL datetime format
-                const formattedBirthday = birthday.toISOString().slice(0, 19).replace('T', ' ');
+            // Format the birthday date to MySQL datetime format
+            const formattedBirthday = birthday.toISOString().slice(0, 19).replace('T', ' ');
             const sql = `
                 UPDATE Patient
                 SET fname = "${data.name.split(' ')[0]}",
@@ -97,8 +97,49 @@ export async function PUT(req: NextRequest) {
 }
 
 
-export async function DELETE() {
-    return Response.json({
-        message: `DELETE method called`,
-    });
+export async function DELETE(req: NextRequest) {
+    try {
+        const data = await req.json();
+        console.log(data);
+
+        const sqlUpdateRooms = `
+        UPDATE Room
+        SET patient_id = NULL
+        WHERE patient_id = "${data.p_id}";
+    `;
+        console.log(sqlUpdateRooms);
+        const [updateResults] = await connection.execute(sqlUpdateRooms);
+        console.log(updateResults);
+
+        const sqlUpdateMedicalHistory = `
+            DELETE FROM MedicalHistory 
+            WHERE patient_id = "${data.p_id}";
+        `;
+        console.log(sqlUpdateMedicalHistory);
+        const [updateMedicalResults] = await connection.execute(sqlUpdateMedicalHistory);
+        console.log(updateMedicalResults);
+
+        const sqlDeletePatient = `
+            DELETE FROM Patient
+            WHERE p_id = "${data.p_id}";
+        `;
+
+        console.log(sqlDeletePatient);
+
+        const [deletePatient] = await connection.execute(sqlDeletePatient, [data.p_id]);
+
+        console.log(deletePatient);
+        await connection.commit();
+
+        return Response.json({
+            status: "success",
+            message: `Deleted patient record and updated associated rooms`,
+        });
+    } catch (error) {
+        console.error(error);
+        return Response.json({
+            status: "failed",
+            message: `Failed to delete patient record or update associated rooms`
+        });
+    }
 }
