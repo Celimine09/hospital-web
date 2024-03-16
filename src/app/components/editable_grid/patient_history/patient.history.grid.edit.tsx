@@ -28,8 +28,8 @@ interface EditToolbarProps<T extends GridValidRowModel> {
     ) => void;
 }
 
-export const HistoryEditToolbar: React.FC<EditToolbarProps<IPatientHistory>> = (props:EditToolbarProps<IPatientHistory>) => {
-    const { setRows, setRowModesModel} = props;
+export const HistoryEditToolbar: React.FC<EditToolbarProps<IPatientHistory>> = (props: EditToolbarProps<IPatientHistory>) => {
+    const { setRows, setRowModesModel } = props;
     const handleClick = () => {
         const id = randomId();
         setRows((oldRows) => [...oldRows, {

@@ -41,6 +41,8 @@ import { getStaffsName } from '@/app/service/stafff.service';
 import { setPatientsAndStaffDropdownData } from '@/app/utils/patient.staff.helper';
 import { IPatient, ResponsePatient } from '@/app/interfaces/IPatient';
 import { IStaff, ResponseStaff } from '@/app/interfaces/IStaff';
+import { useState } from 'react';
+import { random } from 'colors';
 
 export var staffSex: string[] = ["F", "M"]
 export const setPatientsSex = (pns: string[]) => {
@@ -56,23 +58,34 @@ interface EditToolbarProps {
 }
 
 const EditToolbar: React.FC<EditToolbarProps> = ({ setRows, setRowModesModel }) => {
+    const [idCounter, setIdCounter] = useState<number>(0);
     const handleClick = () => {
+        const newId = idCounter + 1;
+        setIdCounter(newId);
         const id = randomId();
-        setRows((oldRows) => [...oldRows, { id, name: '', age: '', isNew: true }]);
-    setRowModesModel((oldModel) => ({
-      ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
-    }));
-  };
+        setRows((oldRows) => [...oldRows, {
+            id: newId,
+            name: "",
+            gender: "",
+            role_id: "",
+            role_name: "",
+            isNew: true
+        }]
+        );
+        console.log(`Addeding new row id = ${newId}`)
+        setRowModesModel((oldModel) => ({
+            ...oldModel,
+            [newId]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+        }));
+    };
 
-  return (
-    <><GridToolbarContainer>
-      <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-        Add record
-      </Button>
-    </GridToolbarContainer><GridToolbar /></>
-  );
-        
+    return (
+        <><GridToolbarContainer>
+            <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+                Add record
+            </Button>
+        </GridToolbarContainer><GridToolbar /></>
+    );
 };
 
 const useFakeMutation = () => {
@@ -216,28 +229,21 @@ const FullFeaturedCrudGrid: React.FC = () => {
     };
 
     const handleDeleteClick = (id: GridRowId) => () => {
-        const editedRow = rows.find((row) => row.s_id === id);
-        console.log(rows)
-        if (editedRow) {
-            const requestData = {
-                s_id: editedRow.s_id,
-            }
-            console.log(editedRow.s_id)
-            axios.delete(`${baseHost}/api/staff/${editedRow.s_id}`, { data: requestData })
-                .then((res) => {
-                    console.log("Staff member deleted successfully:", res.data);
-                    // Remove the deleted row from the state
-                    //setRows(rows.filter((row) => row.s_id !== id));
-                })
-                .catch((err) => {
-                    console.error("Error deleting staff member:", err);
-                    // Handle error feedback here
-                });
-        } else {
-            console.error("Edited row not found or is undefined.");
-            // Handle error feedback here
-        }
         setRows(rows.filter((row) => row.s_id !== id));
+
+        console.log(`row to delete is ${id}`)
+        axios.delete(`${baseHost}/api/staff`, {
+            data: {
+                "s_id": id
+            }
+        }).then((res) => {
+            console.log("Delete staff ?")
+            console.log(res)
+            if (res.data.status == "success") {
+            }
+        }).catch((err) => {
+            console.error(err)
+        })
     };
 
 

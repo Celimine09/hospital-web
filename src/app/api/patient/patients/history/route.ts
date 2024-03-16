@@ -1,5 +1,5 @@
 import { RowDataPacket } from "mysql2";
-import {connection} from "@/app/database/db.connector"
+import { connection } from "@/app/database/db.connector"
 import { NextRequest, NextResponse } from "next/server";
 import { NextApiRequest } from "next";
 
@@ -33,8 +33,8 @@ left join Staff s ON s.s_id = mh.doctor_id
             status: "success",
             history: results.map((res) => {
                 return {
-                    id : res.history_id,
-                    history_id : res.history_id,
+                    id: res.history_id,
+                    history_id: res.history_id,
                     // patient : {
                     //     patient_id : res.patient_id,
                     //     patient_name : res.patient_name,
@@ -43,15 +43,15 @@ left join Staff s ON s.s_id = mh.doctor_id
                     //     doctor_id : res.doctor_id,
                     //     doctor_name : res.doctor_name,
                     // },
-                    patient_id : res.patient_id,
-                    patient_name : res.patient_name,
-                    doctor_id : res.doctor_id,
-                    doctor_name : res.doctor_name,
-                    simple_diagnosis : res.simple_diagnosis,
-                    diagnosis_desc : res.diagnosis_desc,
-                    admission_date : res.admission_date,
-                    discharge_date : res.discharge_date,
-                    bill_price : res.bill_price,
+                    patient_id: res.patient_id,
+                    patient_name: res.patient_name,
+                    doctor_id: res.doctor_id,
+                    doctor_name: res.doctor_name,
+                    simple_diagnosis: res.simple_diagnosis,
+                    diagnosis_desc: res.diagnosis_desc,
+                    admission_date: res.admission_date,
+                    discharge_date: res.discharge_date,
+                    bill_price: res.bill_price,
                 }
             })
         });
@@ -97,9 +97,9 @@ export async function POST(req: NextRequest) {
         ) AS staff_subquery;
     
 `
-console.log(sql)
+    console.log(sql)
     try {
-        const res  = await connection.execute<any>(sql)
+        const res = await connection.execute<any>(sql)
         console.log(res)
         return Response.json({
             status: "success",
@@ -147,14 +147,14 @@ where mh.h_id = "${data.history_id}"
         const [results] = await connection.execute(sql)
         await connection.commit()
         return Response.json({
-            status : "success",
+            status: "success",
             msg: "updated data on db",
             result: results
         });
     } catch (error) {
         console.error(error)
         return Response.json({
-            status : "failed",
+            status: "failed",
             msg: "failed update data on db",
             error: error
         });
@@ -186,6 +186,6 @@ export async function DELETE(req: NextRequest) {
             msg: `history is not deleted`,
             error: error
         });
-        
+
     }
 }

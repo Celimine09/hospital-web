@@ -33,34 +33,30 @@ export async function GET(req: NextRequest) {
     }
 }
 
-
 // insert into Table values (...)
-export async function POST(request: NextRequest) {
-    try {
-        const data = await request.json()
-        console.log(data)
+export async function POST(req: NextRequest) {
+    const data = await req.json();
+    console.log(data);
 
-        const sqlInsertion = `
-            insert into Staff(fname="") values (${data.fname})
+    const sql = `
+            INSERT INTO Staff (fname, role_id, gender, lname)
+            VALUES ('${data.name.split(' ')[0]}', '${data.role_id}', '${data.gender}', '${data.name.split(' ')[1]}')
         `
-
-        const [results] = await connection.execute(sqlInsertion)
-        console.log(results)
+    console.log(sql)
+    try {
+        const res = await connection.execute<any>(sql)
+        console.log(res)
         return Response.json({
             status: "success",
-            message: `POST method called`,
-            // A: data
+            message: res[0]
         });
     } catch (error) {
-        console.log(error)
         return Response.json({
             status: "failed",
-            message: error
-        })
-
+            error: error
+        });
     }
 }
-
 
 // ? update Table ...
 // export async function PUT(req: NextRequest, res: NextResponse) {
@@ -101,30 +97,74 @@ export async function PUT(req: NextRequest) {
     }
 }
 
-
 // ? drop data ...
+async function getRandomDoctorId(): Promise<number | null> {
+    try {
+        const [results, fields] = await connection.query<RowDataPacket[]>(
+            "SELECT doctor_id FROM MedicalHistory ORDER BY RAND() LIMIT 1"
+        );
+        if (results.length > 0) {
+            return results[0].doctor_id;
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching random doctor_id:", error);
+        return null;
+    }
+}
+
 export async function DELETE(req: NextRequest) {
     try {
         const data = await req.json();
-        console.log("Received data:", data);
+        console.log(data);
 
-        const sql = `
-            DELETE FROM Staff
-            WHERE s_id = ${data.s_id}
+        const sqlUpdateRooms = `
+        UPDATE Room
+        SET staff_id = NULL
+        WHERE staff_id = "${data.s_id}";
+    `;
+        console.log(sqlUpdateRooms);
+        const [updateResults] = await connection.execute(sqlUpdateRooms);
+        console.log(updateResults);
+
+        const randomDoctorId = await getRandomDoctorId();
+        if (randomDoctorId === null) {
+            throw new Error("No existing doctor_id records found");
+        }
+
+        const sqlUpdateMedicalHistory = `
+            UPDATE MedicalHistory 
+            SET doctor_id = ${randomDoctorId} 
+            WHERE doctor_id = "${data.s_id}";
         `;
+        console.log(sqlUpdateMedicalHistory);
+        const [updateMedicalResults] = await connection.execute(sqlUpdateMedicalHistory);
+        console.log(updateMedicalResults);
 
-        // const [results] = await connection.execute(sqlDelete, [data.s_id]);
-        // console.log(results);
-        const [results, fields] = await connection.query<RowDataPacket[]>(
-            sql);
-        return Response.json({
-            message: `DELETE method called`,
+        const sqlDeleteStaff = `
+            DELETE FROM Staff 
+            WHERE s_id = "${data.s_id}";
+        `;
+        console.log(sqlDeleteStaff);
+        const [deleteResults] = await connection.execute(sqlDeleteStaff);
+        console.log(deleteResults);
+
+        await connection.commit();
+
+        return NextResponse.json({
+            status: "success",
+            message: `Deleted staff record and updated associated rooms`,
+            result: {
+                deleteResults,
+                updateMedicalResults
+            }
         });
     } catch (error) {
-        console.log(error);
-        return Response.json({
+        console.error(error);
+        return NextResponse.json({
             status: "failed",
-            message: error,
+            message: `Failed to delete staff record or update associated rooms`
         });
     }
 }
