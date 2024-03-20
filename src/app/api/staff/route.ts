@@ -39,10 +39,17 @@ export async function POST(req: NextRequest) {
     console.log(data);
 
     const sql = `
-            INSERT INTO Staff (fname, role_id, gender, lname)
-            VALUES ('${data.name.split(' ')[0]}', '${data.role_id}', '${data.gender}', '${data.name.split(' ')[1]}')
+            INSERT INTO Staff (s_id,fname, role_id, gender, lname)
+            SELECT '${data.id}',
+            'null', 
+            'null', 
+            'null', 
+            'null'
         `
     console.log(sql)
+
+    const [results, fields] = await connection.query<RowDataPacket[]>(
+        sql);
     try {
         const res = await connection.execute<any>(sql)
         console.log(res)
@@ -64,14 +71,14 @@ export async function PUT(req: NextRequest) {
     try {
         const data = await req.json();
         console.log("Received data:", data);
-        if (data.s_id !== undefined) {
+        if (data.id !== undefined) {
             const sql = `
                 UPDATE Staff
                 SET fname = '${data.name.split(' ')[0]}',
                     lname = '${data.name.split(' ')[1]}',
                     gender = '${data.gender}',
                     role_id = '${data.role_id}'
-                WHERE s_id = '${data.s_id}'
+                WHERE s_id = '${data.id}'
             `;
             console.log("SQL query:", sql);
             console.log("SQL parameters:", [data.gender, data.role_id, data.role_name, data.s_id]);

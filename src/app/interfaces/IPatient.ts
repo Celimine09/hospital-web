@@ -9,7 +9,7 @@ export interface IResponseFromGettingPatientNames
 
 export interface IPatient
 {
-    id: number
+    id: string
     isNew: any
     p_id: number
     name: string

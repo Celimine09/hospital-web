@@ -64,6 +64,8 @@ export async function PUT(req: NextRequest) {
             const birthday = new Date(data.birthday);
             // Format the birthday date to MySQL datetime format
             const formattedBirthday = birthday.toISOString().slice(0, 19).replace('T', ' ');
+            
+            data.phone_no.toString;
             const sql = `
                 UPDATE Patient
                 SET fname = "${data.name.split(' ')[0]}",
