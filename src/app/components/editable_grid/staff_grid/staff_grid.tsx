@@ -54,7 +54,7 @@ const EditToolbar: React.FC<EditToolbarProps> = ({ setRows, setRowModesModel }) 
         const id = randomId();
         setRows((oldRows) => [...oldRows, {
             id: id,
-            s_id:"",
+            s_id: "",
             name: "",
             gender: "",
             role_id: "",
@@ -62,7 +62,7 @@ const EditToolbar: React.FC<EditToolbarProps> = ({ setRows, setRowModesModel }) 
             isNew: true
         }]
         );
-        
+
         setRowModesModel((oldModel) => ({
             ...oldModel,
             [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
@@ -120,63 +120,62 @@ const FullFeaturedCrudGrid: React.FC = () => {
             });
     };
 
-const useFakeMutation = () => {
-    return React.useCallback(
-        (newRowToUpdate: Partial<IStaff>) =>
-            new Promise<Partial<IStaff>>((resolve, reject) => {
-                console.log("Updating row ...")
-                console.log(newRowToUpdate)
-                setTimeout(() => {
-                    //  ! this caused double row -> fix by add bool : isCreatingNewRow
-                    if (newRowToUpdate.isNew) {
-                        axios.post(`${baseHost}/api/staff`,
-                            {
-                                ...newRowToUpdate,
-                                //isNew: false,                            
-                            }
-                        ).then((res) => {
-                            console.log(res.data)
-                            // setIsCreatingNewRow(false)
-                            refreshData();
-                        }).catch((err) => {
-                            console.error(err)
-                            // setIsCreatingNewRow(false)
-                        })
-                        newRowToUpdate.isNew = false
-                    }
-                    else
-                    {
-                        axios.put(`${baseHost}/api/staff`,
-                            {
-                                ...newRowToUpdate,
-                                //isNew: false, 
-                            }
-                        ).then((res) => {
-                            console.log(res)
-                            if (res.data.status === "success") {
-                                console.log("updated row")
-                                newRowToUpdate.isNew = false
-                                resolve({ ...newRowToUpdate })
-                            }
-                            else {
-                                console.log("Error updating row")
+    const useFakeMutation = () => {
+        return React.useCallback(
+            (newRowToUpdate: Partial<IStaff>) =>
+                new Promise<Partial<IStaff>>((resolve, reject) => {
+                    console.log("Updating row ...")
+                    console.log(newRowToUpdate)
+                    setTimeout(() => {
+                        //  ! this caused double row -> fix by add bool : isCreatingNewRow
+                        if (newRowToUpdate.isNew) {
+                            axios.post(`${baseHost}/api/staff`,
+                                {
+                                    ...newRowToUpdate,
+                                    //isNew: false,                            
+                                }
+                            ).then((res) => {
                                 console.log(res.data)
-                                // newRowToUpdate.isNew = false
+                                // setIsCreatingNewRow(false)
+                                refreshData();
+                            }).catch((err) => {
+                                console.error(err)
+                                // setIsCreatingNewRow(false)
+                            })
+                            newRowToUpdate.isNew = false
+                        }
+                        else {
+                            axios.put(`${baseHost}/api/staff`,
+                                {
+                                    ...newRowToUpdate,
+                                    //isNew: false, 
+                                }
+                            ).then((res) => {
+                                console.log(res)
+                                if (res.data.status === "success") {
+                                    console.log("updated row")
+                                    newRowToUpdate.isNew = false
+                                    resolve({ ...newRowToUpdate })
+                                }
+                                else {
+                                    console.log("Error updating row")
+                                    console.log(res.data)
+                                    // newRowToUpdate.isNew = false
+                                    // reject({...newRowToUpdate})
+                                    reject(res.data.error)
+                                }
+                            }).catch((err) => {
+                                console.log(err)
                                 // reject({...newRowToUpdate})
-                                reject(res.data.error)
-                            }
-                        }).catch((err) => {
-                            console.log(err)
-                            // reject({...newRowToUpdate})
-                            reject(err)
-                        })
+                                reject(err)
+                            })
 
-                    }
-                },500);
-            }),
-        [],
-    );
-};
+                        }
+                    }, 500);
+                }),
+            [],
+        );
+    };
 
     const mutateRow = useFakeMutation();
 
@@ -193,6 +192,7 @@ const useFakeMutation = () => {
 
     const handleSaveClick = (id: GridRowId) => async () => {
         setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+        refreshData();
     };
 
     const handleDeleteClick = (id: GridRowId) => () => {
@@ -234,7 +234,7 @@ const useFakeMutation = () => {
         return response;
         return updatedRow;
     };
-  
+
     const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
         setRowModesModel(newRowModesModel);
     };

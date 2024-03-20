@@ -37,7 +37,6 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
     const data = await req.json();
     console.log(data);
-    console.log('kuy');
     const sql = `
             INSERT INTO Staff (fname,role_id, lname, gender)
             SELECT 

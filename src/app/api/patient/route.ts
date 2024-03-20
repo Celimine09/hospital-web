@@ -30,28 +30,36 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-    try {
-        const data = await request.json()
-        console.log(data)
+    const data = await request.json();
+    console.log(data);
+    const birthday = new Date(data.birthday);
+    // Format the birthday date to MySQL datetime format
+    const formattedBirthday = birthday.toISOString().slice(0, 19).replace('T', ' ');
 
-        const sqlInsertion = `
-            insert into Patient(fname="") values (${data.fname})
+    data.phone_no.toString;
+    const sql = `
+            INSERT INTO Patient (fname,birthday, lname, gender, phone_no)
+            SELECT 
+            '${data.name.split(' ')[0]}', 
+            '${formattedBirthday}', 
+            '${data.name.split(' ')[1]}', 
+            '${data.gender}',
+            '${data.phone_no}'
         `
+    console.log(sql)
 
-        const [results] = await connection.execute(sqlInsertion)
-        console.log(results)
+    try {
+        const res = await connection.execute<any>(sql)
+        console.log(res)
         return Response.json({
             status: "success",
-            message: `POST method called`,
-            // A: data
+            message: res[0]
         });
     } catch (error) {
-        console.log(error)
         return Response.json({
             status: "failed",
-            message: error
-        })
-
+            error: error
+        });
     }
 }
 
@@ -60,11 +68,11 @@ export async function PUT(req: NextRequest) {
     try {
         const data = await req.json();
         console.log("Received data:", data);
-        if (data.p_id !== undefined) {
+        if (data.id !== undefined) {
             const birthday = new Date(data.birthday);
             // Format the birthday date to MySQL datetime format
             const formattedBirthday = birthday.toISOString().slice(0, 19).replace('T', ' ');
-            
+
             data.phone_no.toString;
             const sql = `
                 UPDATE Patient
@@ -86,7 +94,7 @@ export async function PUT(req: NextRequest) {
             // Handle the case where data.gender or data.s_id is undefined
             return Response.json({
                 status: "failed",
-                message: "Gender or s_id is undefined",
+                message: "Gender or p_id is undefined",
             });
         }
     } catch (error) {
@@ -97,7 +105,6 @@ export async function PUT(req: NextRequest) {
         });
     }
 }
-
 
 export async function DELETE(req: NextRequest) {
     try {

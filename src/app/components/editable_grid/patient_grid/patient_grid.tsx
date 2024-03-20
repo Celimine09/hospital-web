@@ -40,6 +40,7 @@ import { StripedDataGrid } from '../striped_datagrid';
 import { getStaffsName } from '@/app/service/stafff.service';
 import { setPatientsAndStaffDropdownData } from '@/app/utils/patient.staff.helper';
 import { IPatient, ResponsePatient } from '@/app/interfaces/IPatient';
+import { TruncateDateToSqlFormat } from '@/app/utils/date.api';
 
 export var patientSex: string[] = ["F", "M"]
 export const setPatientsSex = (pns: string[]) => {
@@ -57,7 +58,16 @@ interface EditToolbarProps {
 const EditToolbar: React.FC<EditToolbarProps> = ({ setRows, setRowModesModel }) => {
   const handleClick = () => {
     const id = randomId();
-    setRows((oldRows) => [...oldRows, { id: id, name: '', age: '', isNew: true }]);
+    setRows((oldRows) => [...oldRows, {
+      id: id,
+      p_id: "",
+      name: "",
+      gender: "",
+      birthday: moment().toDate(),
+      phone_no: "",
+      isNew: true
+    }]
+    );
     setRowModesModel((oldModel) => ({
       ...oldModel,
       [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
@@ -73,99 +83,104 @@ const EditToolbar: React.FC<EditToolbarProps> = ({ setRows, setRowModesModel }) 
   );
 };
 
-const useFakeMutation = () => {
-  return React.useCallback(
-    // (oldRoomToMutate: Partial<IRoom>) =>
-    //     new Promise<Partial<IRoom>>((resolve, reject) => {
-    (editedRow: Partial<any>) =>
-      new Promise<Partial<any>>((resolve, reject) => {
-        console.log("updated row ...".bgMagenta)
-        setTimeout(() => {
-          console.log(editedRow)
-
-          if (!editedRow.isnew) { // Check if editedRow is not undefined
-            axios.put(`${baseHost}/api/patient`, {
-              p_id: editedRow.p_id,
-              name: editedRow.name,
-              gender: editedRow.gender,
-              birthday: editedRow.birthday,
-              phone_no: editedRow.phone_no
-            })
-              .then((res) => {
-                console.log("Patient member updated successfully:", res.data);
-                // You might want to handle success feedback here
-              })
-              .catch((err) => {
-                console.error("Error updating patient member:", err);
-                // Handle error feedback here
-              });
-          } else {
-            axios.put(`${baseHost}/api/patient/patients`,
-              {
-                ...editedRow,
-              }
-            ).then((res) => {
-              console.log(res)
-              if (res.data.status === "success") {
-                console.log("updated row")
-                editedRow.isNew = false
-                resolve({ ...editedRow })
-              }
-              else {
-                console.log("Error updating row")
-                console.log(res.data)
-                // newRowToUpdate.isNew = false
-                // reject({...newRowToUpdate})
-                reject(res.data.error)
-              }
-            }).catch((err) => {
-              console.log(err)
-              // reject({...newRowToUpdate})
-              reject(err)
-            })
-          }
-
-          console.log("request to changing patient from room")
-          resolve({ ...editedRow })
-        }, 2000);
-      }),
-    [],
-  );
-};
-
 const FullFeaturedCrudGrid: React.FC = () => {
   const [rows, setRows] = React.useState<GridRowsProp<IPatient>>([])
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
-  axios.get(`${baseHost}/api/patient`).then((res: AxiosResponse<ResponsePatient>) => {
-    if (res.data.patient) {
-      const modifiedRows = res.data.patient.map((pt: IPatient) => {
-        return {
-          ...pt,
-          p_id: pt.p_id,
-          name: pt.name,
-          gender: pt.gender,
-          birthday: moment(pt.birthday).toDate(),
-          phone_no: pt.phone_no
-        }
+
+  React.useEffect(() => {
+    axios.get(`${baseHost}/api/patient`)
+      .then((response) => {
+        const patientData = response.data.patient.map((row: { p_id: any; name: any; gender: any; birthday: any; phone_no: any; }) => ({
+          id: row.p_id, // Map p_id to id
+          name: row.name,
+          gender: row.gender,
+          birthday: row.birthday,
+          phone_no: row.phone_no
+        }));
+        setRows(patientData);
       })
-      setRows(modifiedRows)
-      setSnackbar({
-        children: "Retrieved rooms data from server.",
-        severity: "success"
+      .catch((error) => {
+        console.error('Error fetching staff data:', error);
+      });
+  }, []);
+
+  const refreshData = () => {
+    axios.get(`${baseHost}/api/patient`)
+      .then((response) => {
+        const patientData = response.data.patient.map((row: { p_id: any; name: any; gender: any; birthday: any; phone_no: any; }) => ({
+          id: row.p_id, // Map p_id to id
+          name: row.name,
+          gender: row.gender,
+          birthday: row.birthday,
+          phone_no: row.phone_no
+        }));
+        setRows(patientData);
       })
-    }
-  }).catch((err: any) => {
-    console.log("Error getting room data from backend.")
-    setSnackbar({
-      children: "Can not retrive rooms data from server...",
-      severity: "error"
-    })
-  })
+      .catch((error) => {
+        console.error('Error fetching staff data:', error);
+      });
+  };
+
+  const useFakeMutation = () => {
+    return React.useCallback(
+      (newRowToUpdate: Partial<IPatient>) =>
+        new Promise<Partial<IPatient>>((resolve, reject) => {
+          console.log("Updating row ...")
+          console.log(newRowToUpdate)
+          setTimeout(() => {
+            //  ! this caused double row -> fix by add bool : isCreatingNewRow
+            if (newRowToUpdate.isNew) {
+              axios.post(`${baseHost}/api/patient`,
+                {
+                  ...newRowToUpdate,
+                  birthday: TruncateDateToSqlFormat(newRowToUpdate.birthday),
+                  //isNew: false,                            
+                }
+              ).then((res) => {
+                console.log(res.data)
+                // setIsCreatingNewRow(false)
+                refreshData();
+              }).catch((err) => {
+                console.error(err)
+                // setIsCreatingNewRow(false)
+              })
+              newRowToUpdate.isNew = false
+            }
+            else {
+              axios.put(`${baseHost}/api/patient`,
+                {
+                  ...newRowToUpdate,
+                  birthday: TruncateDateToSqlFormat(newRowToUpdate.birthday),
+                  p_id: id,
+                }
+              ).then((res) => {
+                console.log(res)
+                if (res.data.status === "success") {
+                  console.log("updated row")
+                  newRowToUpdate.isNew = false
+                  resolve({ ...newRowToUpdate })
+                }
+                else {
+                  console.log("Error updating row")
+                  console.log(res.data)
+                  // newRowToUpdate.isNew = false
+                  // reject({...newRowToUpdate})
+                  reject(res.data.error)
+                }
+              }).catch((err) => {
+                console.log(err)
+                // reject({...newRowToUpdate})
+                reject(err)
+              })
+
+            }
+          }, 500);
+        }),
+      [],
+    );
+  };
+
   const mutateRow = useFakeMutation();
-  const [snackbar, setSnackbar] = React.useState<Pick<
-    AlertProps,
-    'children' | 'severity'
-  > | null>(null);
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -175,53 +190,11 @@ const FullFeaturedCrudGrid: React.FC = () => {
 
   const handleEditClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-    const editedRow = rows.find((row) => row.p_id === id);
-
-    console.log(editedRow)
-
-    if (editedRow) { // Check if editedRow is not undefined
-      axios.put(`${baseHost}/api/patient`, {
-        p_id: editedRow.p_id,
-        name: editedRow.name,
-        gender: editedRow.gender,
-        birthday: editedRow.birthday,
-        phone_no: editedRow.phone_no
-      })
-        .then((res) => {
-          console.log("Patient member updated successfully:", res.data);
-        })
-        .catch((err) => {
-          console.error("Error updating patient member:", err);
-        });
-    } else {
-      console.error("Edited row not found or is undefined.");
-    }
-    console.log(rowModesModel)
   };
 
   const handleSaveClick = (id: GridRowId) => () => {
-    const editedRow = rows.find((row) => row.p_id === id);
-    console.log(editedRow)
-    if (editedRow) {
-      const requestData = {
-        p_id: editedRow.p_id,
-        name: editedRow.name,
-        gender: editedRow.gender,
-        birthday: editedRow.birthday,
-        phone_no: editedRow.phone_no
-      };
-      axios.put(`${baseHost}/api/patient/${editedRow.p_id}`, requestData)
-        .then((res) => {
-          console.log("Patient member updated successfully:", res.data);
-        })
-        .catch((err) => {
-          console.error("Error updating patient member:", err);
-        });
-    } else {
-      console.error("Edited row not found or is undefined.");
-      // Handle error feedback here
-    }
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    refreshData();
   };
 
   const handleDeleteClick = (id: GridRowId) => () => {
@@ -236,6 +209,7 @@ const FullFeaturedCrudGrid: React.FC = () => {
       console.log("Delete patient ?")
       console.log(res)
       if (res.data.status == "success") {
+        refreshData();
       }
     }).catch((err) => {
       console.error(err)
@@ -243,41 +217,33 @@ const FullFeaturedCrudGrid: React.FC = () => {
   };
 
   const handleCancelClick = (id: GridRowId) => () => {
+    const editedRow = rows.find((row) => row.p_id == id);
+    if (editedRow && editedRow.isNew) {
+      setRows(rows.filter((row) => row.p_id !== id));
+    }
     setRowModesModel({
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
-
-    const editedRow = rows.find((row) => row.p_id === id);
-    if (editedRow!.isNew) {
-      setRows(rows.filter((row) => row.p_id !== id));
-    }
   };
 
-  const processRowUpdate = React.useCallback(
-    // async (newRow: GridRowModel<IRoom>) => {
-    async (newRow: GridRowModel) => {
-      // Make the HTTP request to save in the backend
-      // console.log("updated")
-      const response = await mutateRow(newRow);
-      setSnackbar({ children: 'User successfully saved', severity: 'success' });
-      return response;
-    },
-    [mutateRow],
-  );
+  const processRowUpdate = async (newRow: GridRowModel) => {
+    const updatedRow = { ...newRow, isNew: false };
+    const response = await mutateRow(newRow);
+    console.log("res from fake mutate")
+    console.log(response)
+    return response;
+    return updatedRow;
+  };
 
   const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
     setRowModesModel(newRowModesModel);
   };
 
+  const handleProcessRowUpdateError = React.useCallback((error: Error) => {
+  }, []);
+
   const columns: GridColDef[] = [
-    {
-      field: 'p_id',
-      headerName: 'ID',
-      type: 'string',
-      width: 70,
-      editable: true,
-    },
     {
       field: 'name',
       headerName: 'Name',
@@ -287,7 +253,7 @@ const FullFeaturedCrudGrid: React.FC = () => {
     },
     {
       field: 'gender',
-      headerName: 'Sex',
+      headerName: 'Gender',
       type: 'singleSelect',
       width: 130,
       editable: true,
@@ -305,6 +271,14 @@ const FullFeaturedCrudGrid: React.FC = () => {
       align: 'left',
       headerAlign: 'left',
       editable: true,
+      valueFormatter: params => {
+        // console.log(params)
+        if (params.value != "Invalid Date")
+          return moment(params?.value).format("DD/MM/YYYY")
+        // else
+        //     return "-"
+        return params?.value
+      }
     },
     {
       field: 'phone_no',
@@ -377,12 +351,12 @@ const FullFeaturedCrudGrid: React.FC = () => {
       <DataGrid
         rows={rows}
         columns={columns}
-        getRowId={(row) => row.p_id}
         editMode="row"
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
         onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
+        onProcessRowUpdateError={handleProcessRowUpdateError}
         slots={{
           toolbar: EditToolbar
         }}
