@@ -151,28 +151,18 @@ const FullFeaturedCrudGrid: React.FC = () => {
                 {
                   ...newRowToUpdate,
                   birthday: TruncateDateToSqlFormat(newRowToUpdate.birthday),
-                  p_id: id,
+                  
                 }
               ).then((res) => {
                 console.log(res)
-                if (res.data.status === "success") {
-                  console.log("updated row")
-                  newRowToUpdate.isNew = false
-                  resolve({ ...newRowToUpdate })
-                }
-                else {
-                  console.log("Error updating row")
-                  console.log(res.data)
-                  // newRowToUpdate.isNew = false
-                  // reject({...newRowToUpdate})
-                  reject(res.data.error)
-                }
+                
+                refreshData();
               }).catch((err) => {
                 console.log(err)
                 // reject({...newRowToUpdate})
                 reject(err)
               })
-
+              
             }
           }, 500);
         }),

@@ -69,9 +69,6 @@ export async function PUT(req: NextRequest) {
         const data = await req.json();
         console.log("Received data:", data);
         if (data.id !== undefined) {
-            const birthday = new Date(data.birthday);
-            // Format the birthday date to MySQL datetime format
-            const formattedBirthday = birthday.toISOString().slice(0, 19).replace('T', ' ');
 
             data.phone_no.toString;
             const sql = `
@@ -79,9 +76,9 @@ export async function PUT(req: NextRequest) {
                 SET fname = "${data.name.split(' ')[0]}",
                     lname = "${data.name.split(' ')[1]}",
                     gender = "${data.gender}",
-                    birthday = "${formattedBirthday}",
+                    birthday = ${data.birthday},
                     phone_no = "${data.phone_no}"
-                WHERE p_id = "${data.p_id}"
+                WHERE p_id = "${data.id}"
             `;
             console.log("SQL query:", sql);
 

@@ -152,18 +152,7 @@ const FullFeaturedCrudGrid: React.FC = () => {
                                 }
                             ).then((res) => {
                                 console.log(res)
-                                if (res.data.status === "success") {
-                                    console.log("updated row")
-                                    newRowToUpdate.isNew = false
-                                    resolve({ ...newRowToUpdate })
-                                }
-                                else {
-                                    console.log("Error updating row")
-                                    console.log(res.data)
-                                    // newRowToUpdate.isNew = false
-                                    // reject({...newRowToUpdate})
-                                    reject(res.data.error)
-                                }
+                                refreshData();
                             }).catch((err) => {
                                 console.log(err)
                                 // reject({...newRowToUpdate})

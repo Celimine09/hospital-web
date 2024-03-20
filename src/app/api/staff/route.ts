@@ -82,7 +82,8 @@ export async function PUT(req: NextRequest) {
 
             const [results, fields] = await connection.query<RowDataPacket[]>(
                 sql);
-            console.log("SQL execution results:", results); return Response.json({
+            console.log("SQL execution results:", results); 
+            return Response.json({
                 message: `PUT method called`,
             });
         } else {
