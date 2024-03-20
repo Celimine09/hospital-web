@@ -37,19 +37,17 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
     const data = await req.json();
     console.log(data);
-
+    console.log('kuy');
     const sql = `
-            INSERT INTO Staff (s_id,fname, role_id, gender, lname)
-            SELECT '${data.id}',
-            'null', 
-            'null', 
-            'null', 
-            'null'
+            INSERT INTO Staff (fname,role_id, lname, gender)
+            SELECT 
+            '${data.name.split(' ')[0]}', 
+            '${data.role_id}', 
+            '${data.name.split(' ')[1]}', 
+            '${data.gender}'
         `
     console.log(sql)
 
-    const [results, fields] = await connection.query<RowDataPacket[]>(
-        sql);
     try {
         const res = await connection.execute<any>(sql)
         console.log(res)

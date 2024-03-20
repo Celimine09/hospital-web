@@ -15,7 +15,7 @@ export interface IPatient
     name: string
     gender: string
     birthday: Date
-    phone_no: string
+    phone_no: number
 }
 
 export interface ResponsePatient {

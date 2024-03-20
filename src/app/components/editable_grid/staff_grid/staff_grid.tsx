@@ -101,6 +101,25 @@ const FullFeaturedCrudGrid: React.FC = () => {
                 console.error('Error fetching staff data:', error);
             });
     }, []);
+
+    const refreshData = () => {
+        axios.get(`${baseHost}/api/staff`)
+            .then((response) => {
+                const staffData = response.data.staff.map((row: { s_id: any; name: any; gender: any; role_id: any; role_name: any; }) => ({
+                    id: row.s_id, // Map s_id to id
+                    name: row.name,
+                    gender: row.gender,
+                    role_id: row.role_id,
+                    role_name: row.role_name
+                }));
+                setRows(staffData);
+            })
+            .catch((error) => {
+                console.error('Error fetching staff data:', error);
+                // Handle error fetching data
+            });
+    };
+
 const useFakeMutation = () => {
     return React.useCallback(
         (newRowToUpdate: Partial<IStaff>) =>
@@ -110,15 +129,15 @@ const useFakeMutation = () => {
                 setTimeout(() => {
                     //  ! this caused double row -> fix by add bool : isCreatingNewRow
                     if (newRowToUpdate.isNew) {
-                        console.log("POST HIS")
                         axios.post(`${baseHost}/api/staff`,
                             {
                                 ...newRowToUpdate,
-                                
+                                //isNew: false,                            
                             }
                         ).then((res) => {
                             console.log(res.data)
                             // setIsCreatingNewRow(false)
+                            refreshData();
                         }).catch((err) => {
                             console.error(err)
                             // setIsCreatingNewRow(false)
@@ -127,11 +146,10 @@ const useFakeMutation = () => {
                     }
                     else
                     {
-                        console.log("PUT HIS")
                         axios.put(`${baseHost}/api/staff`,
                             {
                                 ...newRowToUpdate,
-                               
+                                //isNew: false, 
                             }
                         ).then((res) => {
                             console.log(res)
@@ -154,14 +172,13 @@ const useFakeMutation = () => {
                         })
 
                     }
-                },800);
+                },500);
             }),
         [],
     );
 };
 
-const mutateRow = useFakeMutation();
-    // Handle edit, save, delete, and cancel click events...
+    const mutateRow = useFakeMutation();
 
     const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
         if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -174,7 +191,6 @@ const mutateRow = useFakeMutation();
         setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
     };
 
-    // const handleSaveClick = (id: GridRowId, isCreateNew: boolean) => async () => {
     const handleSaveClick = (id: GridRowId) => async () => {
         setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
     };
@@ -191,6 +207,7 @@ const mutateRow = useFakeMutation();
             console.log("Delete staff ?")
             console.log(res)
             if (res.data.status == "success") {
+                refreshData();
             }
         }).catch((err) => {
             console.error(err)
@@ -198,16 +215,16 @@ const mutateRow = useFakeMutation();
     };
 
     const handleCancelClick = (id: GridRowId) => () => {
+        const editedRow = rows.find((row) => row.s_id == id);
+        if (editedRow && editedRow.isNew) {
+            setRows(rows.filter((row) => row.s_id !== id));
+        }
         setRowModesModel({
             ...rowModesModel,
             [id]: { mode: GridRowModes.View, ignoreModifications: true },
         });
-
-        const editedRow = rows.find((row) => row.s_id == id);
-        if (editedRow!.isNew) {
-            setRows(rows.filter((row) => row.s_id !== id));
-        }
     };
+
 
     const processRowUpdate = async (newRow: GridRowModel) => {
         const updatedRow = { ...newRow, isNew: false };
@@ -217,10 +234,13 @@ const mutateRow = useFakeMutation();
         return response;
         return updatedRow;
     };
-
+  
     const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
         setRowModesModel(newRowModesModel);
     };
+
+    const handleProcessRowUpdateError = React.useCallback((error: Error) => {
+    }, []);
 
     const columns: GridColDef[] = [
         { field: 'name', headerName: 'Name', width: 250, editable: true },
@@ -321,6 +341,7 @@ const mutateRow = useFakeMutation();
                 onRowModesModelChange={handleRowModesModelChange}
                 onRowEditStop={handleRowEditStop}
                 processRowUpdate={processRowUpdate}
+                onProcessRowUpdateError={handleProcessRowUpdateError}
                 slots={{
                     toolbar: EditToolbar
                 }}

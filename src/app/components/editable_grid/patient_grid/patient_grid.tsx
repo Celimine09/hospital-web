@@ -145,7 +145,7 @@ const FullFeaturedCrudGrid: React.FC = () => {
           name: pt.name,
           gender: pt.gender,
           birthday: moment(pt.birthday).toDate(),
-          tel: pt.phone_no
+          phone_no: pt.phone_no
         }
       })
       setRows(modifiedRows)
@@ -307,7 +307,7 @@ const FullFeaturedCrudGrid: React.FC = () => {
       editable: true,
     },
     {
-      field: 'tel',
+      field: 'phone_no',
       headerName: 'Tel.',
       width: 230,
       editable: true,
