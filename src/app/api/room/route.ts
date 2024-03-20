@@ -1,6 +1,7 @@
 import { RowDataPacket } from "mysql2";
 import { connection } from "../../database/db.connector"
 import { NextRequest, NextResponse } from "next/server";
+import { RestaurantRounded } from "@mui/icons-material";
 
 
 export async function GET() {
@@ -10,7 +11,7 @@ export async function GET() {
     //     console.error(err)
     // })
     const sql_getRoomDatasWithNullIfExists = `
-    SELECT 
+    SELECT distinctrow
 concat(p.fname, " ", p.lname) as patient,
 concat(s.fname, " ", s.lname) as staff,
 r.room_number,
@@ -67,31 +68,7 @@ export async function PUT(req: NextRequest) {
     console.log(data)
     console.log("PUT on backend /api/room")
 
-    if (data.operation === "clear" && data.room_id !== undefined) {
-        console.log("Clear staff and patient from this room")
-        try {
-            const [results, fields] = await connection.query<RowDataPacket[]>(
-                `
-                    update Room
-                    set patient_id = null, staff_id = null
-                    where room_id = ${data.room_id}
-                `
-            );
-            console.log(results)
-            return Response.json({
-                status: `success`,
-                message: `cleared room id[${data.room_id}]`,
-                response: results
-            });
-        } catch (err) {
-            console.log(err);
-            return Response.json({
-                status: "failed",
-                message: err
-            })
-        }
-    }
-    else if (data.operation === "changeStaff") {
+    if (data.operation === "changeStaff") {
         console.log("change staff")
         console.log(data)
         try {
@@ -108,10 +85,12 @@ export async function PUT(req: NextRequest) {
                     FROM Staff s
                     WHERE s.fname = '${name_to_change}'
                     -- WHERE s.fname = '${'นานะ'}'
+                    limit 1
                 )
             where r.room_id = ${data.room_id}
 
             `
+            console.log(sql)
             const [results, fields] = await connection.query<RowDataPacket[]>(
                 sql);
             console.log(results)
@@ -151,6 +130,7 @@ export async function PUT(req: NextRequest) {
             where r.room_id = ${data.room_id}
 
             `
+            console.log(sql)
             const [results, fields] = await connection.query<RowDataPacket[]>(
                 sql);
             console.log(results)
@@ -163,7 +143,7 @@ export async function PUT(req: NextRequest) {
             console.log(err);
             return Response.json({
                 status: "failed",
-                message: err
+                message: JSON.stringify(err)
             })
         }
     }
@@ -177,7 +157,34 @@ export async function PUT(req: NextRequest) {
 }
 
 
-export async function DELETE() {
+export async function DELETE(req: NextRequest) {
+    const data = await req.json()
+    console.log(data)
+    console.log("Clear room on DELETE METHOD")
+    if (data.room_id !== undefined) {
+        console.log("Clear staff and patient from this room")
+        try {
+            const [results, fields] = await connection.query<RowDataPacket[]>(
+                `
+                    update Room
+                    set patient_id = null, staff_id = null
+                    where room_id = ${data.room_id}
+                `
+            );
+            console.log(results)
+            return Response.json({
+                status: `success`,
+                message: `cleared room id[${data.room_id}]`,
+                response: results
+            });
+        } catch (err) {
+            console.log(err);
+            return Response.json({
+                status: "failed",
+                message: err
+            })
+        }
+    }
     return Response.json({
         message: `DELETE method called`,
     });
