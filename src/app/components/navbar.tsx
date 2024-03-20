@@ -5,7 +5,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import Styles from '../styles/navbar.module.css';
 import { IconButton, Typography } from "@mui/material";
-import { LocalHospital, Menu } from "@mui/icons-material";
+import { LocalHospital, Menu, Style } from "@mui/icons-material";
 import Link from "next/link";
 import ThemeToggler from "./themeToggler/theme.toggler";
 import { baseHost } from "../constants/URLs";
@@ -17,7 +17,11 @@ interface INavblock {
 
 const Navblock = (props: INavblock) => {
   return (
-    <Button variant="outlined" className={Styles.navbarButton}>
+    <Button variant="outlined" 
+      sx={{
+        color: "white"
+      }}
+    >
       {/* // <div className={Styles.navbarButton}> */}
       {/* // <Button variant="outlined" > */}
       <Link href={props.url}>
@@ -43,7 +47,7 @@ export default function Navbar() {
           <IconButton
             size="large"
             edge="start"
-            color="inherit"
+            // color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
           >

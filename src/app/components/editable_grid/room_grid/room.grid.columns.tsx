@@ -124,9 +124,10 @@ export const roomColumns: GridColDef[] = [
                 params.row.staff = ""
                 params.row.admission_date = "Invalid Date"
 
-                axios.put(`${baseHost}/api/room`, {
-                    operation: "clear",
-                    room_id: params.row.room_id
+                axios.delete(`${baseHost}/api/room`, {
+                    data: {
+                        room_id: params.row.room_id
+                    }
                 }).then((res) => {
                     console.log(`clear staff, patient from room id = ${params.row.room_id} and respnsed from server is`)
                     console.log(res)

@@ -85,8 +85,8 @@ export async function POST(req: NextRequest) {
         (
             SELECT p_id
             FROM Patient
-            -- WHERE CONCAT(fname, " ", lname) = "${data.patient_name}"
-            WHERE CONCAT(fname, " ", lname) = "นาทีทอง มองอะไร"
+            WHERE CONCAT(fname, " ", lname) = "${data.patient_name}"
+            -- WHERE CONCAT(fname, " ", lname) = "นาทีทอง มองอะไร"
         ) AS patient_subquery
     CROSS JOIN
         (
