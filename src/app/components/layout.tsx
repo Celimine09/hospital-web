@@ -5,7 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { PaletteMode } from "@mui/material";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { ColorModeContext } from "../contexts/theme.context";
-
+import Footer from "./footer";
 
 const Layout = ({ children }: PropsWithChildren) => {
     const [mode, setMode] = React.useState<PaletteMode>('light');
@@ -44,9 +44,11 @@ const Layout = ({ children }: PropsWithChildren) => {
                 <ThemeProvider theme={theme}>
                     <CssBaseline />
                     {loggingIn && <Navbar />}
+                    
                     {children}
+                    {loggingIn && <Footer/>}
                 </ThemeProvider>
-
+                    
             </ColorModeContext.Provider>
         </>
     );
